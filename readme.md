@@ -19,4 +19,4 @@
 
 - `cd interactive_rendering_tool`
 - (首次运行)添加执行权限：`sudo chmod 777 toolrun`
-- 代码编译：`./toolrun`
+- 代码运行：`./toolrun`
