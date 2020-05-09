@@ -1,5 +1,6 @@
 /* Copyright [2020] <houqian & xiaotong> */
 #include <GL/glut.h>
+#include "../include/interactive_rendering_tool.h"
 
 void draw(void) {
   // green background
