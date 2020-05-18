@@ -1,1 +1,7 @@
-./build/interactive_rendering_tool
+#!/bin/bash
+
+if [ ! -d build  ];then
+  echo "Run Error: please run 'toolmake' first."
+else
+  ./build/interactive_rendering_tool
+fi

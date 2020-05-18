@@ -10,7 +10,6 @@
 ## 编译
 
 - `cd interactive_rendering_tool`
-- (首次编译)添加编译目录：`mkdir build`
 - (首次编译)添加执行权限：`sudo chmod 777 toolmake`
 - 代码编译：`./toolmake`
 
