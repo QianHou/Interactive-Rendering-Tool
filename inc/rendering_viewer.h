@@ -54,7 +54,6 @@ class RenderingViewer : public QOpenGLWidget {
   QOpenGLVertexArrayObject* array_obj_;
 
   QOpenGLTexture* texture_;
-  QElapsedTimer* timer_;
 
   float aspect_ratio_ = 0;
 

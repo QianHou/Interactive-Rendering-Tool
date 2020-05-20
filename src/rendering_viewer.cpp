@@ -11,13 +11,11 @@ RenderingViewer::RenderingViewer(QWidget *parent) :
   color_obj_(new QOpenGLBuffer(QOpenGLBuffer::Type::VertexBuffer)),
   texture_index_obj_(new QOpenGLBuffer(QOpenGLBuffer::Type::VertexBuffer)),
   array_obj_(new QOpenGLVertexArrayObject()),
-  timer_(new QElapsedTimer()),
   camera_pos_(0.0f, 3.0f, 0.0f),
   observe_center_(0.0f, 0.0f, 0.0f) {
   memcpy(this->vertex_buf_, VERTEX_INIT_DATA, sizeof(this->vertex_buf_));
   memcpy(this->color_buf_, COLOR_INIT_DATA, sizeof(this->color_buf_));
   memcpy(this->texture_index_buf_, TEXTURE_INDEX_INIT_DATA, sizeof(this->texture_index_buf_));
-  timer_->start();
 }
 
 RenderingViewer::~RenderingViewer() {
@@ -28,7 +26,6 @@ RenderingViewer::~RenderingViewer() {
   delete texture_index_obj_;
   delete array_obj_;
   delete texture_;
-  delete timer_;
 }
 
 void RenderingViewer::initializeGL() {
@@ -81,14 +78,12 @@ void RenderingViewer::paintGL() {
   QMatrix4x4 mvp_matrix;
   mvp_matrix.perspective(45.0f, aspect_ratio_, 0.1f, 100.0f);
   mvp_matrix.lookAt(camera_pos_, observe_center_, QVector3D(0.0f, 0.0f, 1.0f));
-  float time_s = (float)timer_->elapsed() / 1000;
-  // mvp_matrix.rotate(30.0f * time_s, QVector3D(0.0f, 0.0f, 1.0f));
   fuc_->glDrawArrays(GL_TRIANGLES, 0, 4*3);
   shader_->setUniformValue(shader_->uniformLocation("MVP"), mvp_matrix);
 
   shader_->release();
   array_obj_->release();
-  
+
   // request for drawing update
   this->update();
 }
@@ -112,13 +107,13 @@ void RenderingViewer::mousePressEvent(QMouseEvent* event) {
       mouse_.left.last_pos_x = event->x();
       mouse_.left.last_pos_y = event->y();
       break;
-    
+
     case Qt::RightButton:
       mouse_.right.is_pressed = true;
       mouse_.right.last_pos_x = event->x();
       mouse_.right.last_pos_y = event->y();
       break;
-  
+
   default:
     break;
   }
@@ -131,13 +126,13 @@ void RenderingViewer::mouseReleaseEvent(QMouseEvent* event) {
       mouse_.left.last_pos_x = 0;
       mouse_.left.last_pos_y = 0;
       break;
-    
+
     case Qt::RightButton:
       mouse_.right.is_pressed = false;
       mouse_.right.last_pos_x = 0;
       mouse_.right.last_pos_y = 0;
       break;
-  
+
   default:
     break;
   }
@@ -156,14 +151,12 @@ void RenderingViewer::mouseMoveEvent(QMouseEvent* event) {
     mouse_.left.last_pos_y = event->y();
   }
   emit signalCameraPositionChange();
-  std::cout << camera_pos_.x() << " , " << camera_pos_.y() << " , " << camera_pos_.z() << std::endl;
 }
 
 void RenderingViewer::wheelEvent(QWheelEvent*event) {
   camera_pos_.setX(camera_pos_.x() * (1 - event->delta()*0.001));
   camera_pos_.setY(camera_pos_.y() * (1 - event->delta()*0.001));
   camera_pos_.setZ(camera_pos_.z() * (1 - event->delta()*0.001));
-  std::cout << camera_pos_.x() << " , " << camera_pos_.y() << " , " << camera_pos_.z() << std::endl;
   emit signalCameraPositionChange();
 }
 
