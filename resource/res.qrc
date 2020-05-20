@@ -1,0 +1,7 @@
+<RCC>
+  <qresource>
+    <file>shaders/fragment.shader</file>
+    <file>shaders/vertex.shader</file>
+    <file>images/default.jpeg</file>
+  </qresource>
+</RCC>

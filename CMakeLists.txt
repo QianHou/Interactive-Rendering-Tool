@@ -30,16 +30,25 @@ include_directories(
   ${Qt5OpenGL_LIBRARIES}
 )
 
+qt5_wrap_cpp(MOC_LIBS
+  inc/interactive_rendering_tool.h
+  inc/rendering_viewer.h
+)
+qt5_add_resources(QRC_LIBS
+  resource/res.qrc
+)
+
 add_executable(interactive_rendering_tool
   src/main.cpp
   src/interactive_rendering_tool.cpp
   src/rendering_viewer.cpp
-  src/interactive_rendering_tool.ui
-  inc/interactive_rendering_tool.h
-  inc/rendering_viewer.h
+  ${MOC_LIBS}
+  ${QRC_LIBS}
 )
 
-target_link_libraries(interactive_rendering_tool 
+target_link_libraries(interactive_rendering_tool
+  ${GLUT_INCLUDE_DIRS}
+  ${OpenGL_INCLUDE_DIRS}
   Qt5::Widgets
   Qt5::OpenGL
 )

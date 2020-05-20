@@ -10,10 +10,13 @@ InteractiveRenderingTool::InteractiveRenderingTool(QWidget *parent) :
 
   this->setFixedSize(this->width(), this->height());
   viewer_->setObjectName(QStringLiteral("RenderingViewer"));
-  viewer_->setGeometry(QRect(0, 0, this->geometry().width() * 0.75, this->geometry().height()));
+  viewer_->setGeometry(QRect(0, 0, ui_->viewer_divide->x(), this->geometry().height()));
+
+  connect(ui_->texture_choose_button, SIGNAL(clicked()), viewer_, SLOT(onChooseTextureImage()), Qt::DirectConnection);
 }
 
 InteractiveRenderingTool::~InteractiveRenderingTool() {
   delete ui_;
+  delete viewer_;
 }
 

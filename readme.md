@@ -3,9 +3,7 @@
 ## 依赖
 
 - Qt 5.5.1
-- OpenGL Library安装：`sudo apt-get install libgl1-mesa-dev`
-- OpenGL Utilities安装：`sudo apt-get install libglu1-mesa-dev`
-- OpenGL Utility Toolkit安装：`sudo apt-get install libglut-dev`
+- OpenGL
 
 ## 编译
 
