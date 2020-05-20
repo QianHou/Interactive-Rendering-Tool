@@ -11,6 +11,7 @@
 #include <QElapsedTimer>
 #include <QMouseEvent>
 #include <QOpenGLTexture>
+#include <QWheelEvent>
 
 #define SHADER_VERTEX_OFFSET  (0)
 #define SHADER_COLOR_OFFSET   (1)
@@ -34,6 +35,7 @@ class RenderingViewer : public QOpenGLWidget {
   void mousePressEvent(QMouseEvent *event);
   void mouseReleaseEvent(QMouseEvent *event);
   void mouseMoveEvent(QMouseEvent* event);
+  void wheelEvent(QWheelEvent*event);
 
  private:
   QOpenGLFunctions* fuc_;         // Qt封装的OpenGL函数对象

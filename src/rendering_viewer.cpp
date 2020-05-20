@@ -83,7 +83,7 @@ void RenderingViewer::paintGL() {
   mvp_matrix.perspective(45.0f, aspect_ratio_, 0.1f, 100.0f);
   mvp_matrix.lookAt(camera_pos_, observe_center_, QVector3D(0.0f, 0.0f, 1.0f));
   float time_s = (float)timer_->elapsed() / 1000;
-  // mvp_matrix.rotate(30.0f * time_s, QVector3D(0.7f, 0.5f, 0.2f));
+  // mvp_matrix.rotate(30.0f * time_s, QVector3D(0.0f, 0.0f, 1.0f));
   fuc_->glDrawArrays(GL_TRIANGLES, 0, 4*3);
   shader_->setUniformValue(shader_->uniformLocation("MVP"), mvp_matrix);
 
@@ -146,15 +146,23 @@ void RenderingViewer::mouseReleaseEvent(QMouseEvent* event) {
 
 void RenderingViewer::mouseMoveEvent(QMouseEvent* event) {
   if (mouse_.left.is_pressed) {
-    camera_pos_.setX(camera_pos_.x() + static_cast<int>(event->x() - mouse_.left.last_pos_x) * 0.01);
-    camera_pos_.setZ(camera_pos_.z() + static_cast<int>(event->y() - mouse_.left.last_pos_y) * 0.01);
+    float theta = static_cast<int>(event->x() - mouse_.left.last_pos_x) * 0.01 + std::atan2(camera_pos_.y(), camera_pos_.x());
+    float radius = sqrt(pow(camera_pos_.x(), 2)+ pow(camera_pos_.y(), 2));
+    camera_pos_.setX(radius * std::cos(theta));
+    camera_pos_.setY(radius * std::sin(theta));
+
+    // camera_pos_.setX(camera_pos_.x() + static_cast<int>(event->x() - mouse_.left.last_pos_x) * 0.01);
+    // camera_pos_.setZ(camera_pos_.z() + static_cast<int>(event->y() - mouse_.left.last_pos_y) * 0.01);
     mouse_.left.last_pos_x = event->x();
     mouse_.left.last_pos_y = event->y();
   }
-  if (mouse_.right.is_pressed) {
-    camera_pos_.setY(camera_pos_.y() + static_cast<int>(event->x()+event->y() - 
-                                                       (mouse_.right.last_pos_x+mouse_.right.last_pos_y)) * 0.01);
-    mouse_.right.last_pos_x = event->x();
-    mouse_.right.last_pos_y = event->y();
-  }
+  std::cout << camera_pos_.x() << " , " << camera_pos_.y() << " , " << camera_pos_.z() << std::endl;
+}
+
+void RenderingViewer::wheelEvent(QWheelEvent*event) {
+  camera_pos_.setX(camera_pos_.x() * (1 - event->delta()*0.001));
+  camera_pos_.setY(camera_pos_.y() * (1 - event->delta()*0.001));
+  camera_pos_.setZ(camera_pos_.z() * (1 - event->delta()*0.001));
+  std::cout << camera_pos_.x() << " , " << camera_pos_.y() << " , " << camera_pos_.z() << std::endl;
+
 }
