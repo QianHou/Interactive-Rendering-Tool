@@ -23,13 +23,20 @@ class RenderingViewer : public QOpenGLWidget {
   explicit RenderingViewer(QWidget *parent);
   ~RenderingViewer();
 
+  QVector3D getCameraPosition() { return camera_pos_; }
+
  protected:
   void initializeGL() override;
   void paintGL() override;
   void resizeGL(int width, int height) override;
 
+
+ signals:
+  void signalCameraPositionChange();
+
  public slots:
   void onChooseTextureImage();
+  void onResetCameraPosition();
 
  private slots:
   void mousePressEvent(QMouseEvent *event);

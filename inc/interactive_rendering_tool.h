@@ -17,6 +17,9 @@ class InteractiveRenderingTool : public QWidget {
   explicit InteractiveRenderingTool(QWidget *parent = nullptr);
   ~InteractiveRenderingTool();
 
+ public slots:
+  void onCameraPositionChange();
+
  private:
   Ui::InteractiveRenderingTool* ui_;
   RenderingViewer* viewer_;
