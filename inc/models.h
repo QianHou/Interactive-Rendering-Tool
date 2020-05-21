@@ -61,7 +61,7 @@ class TetrahedronModel {
 
 class TetrahedronLightModel : public TetrahedronModel {
  public:
-  TetrahedronLightModel();
+  TetrahedronLightModel(QVector3D light_position, QVector3D light_color, double light_intensity);
 
   void init();
   void paint(QMatrix4x4 view_matrix, QMatrix4x4 model_matrix);

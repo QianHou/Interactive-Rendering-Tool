@@ -60,11 +60,11 @@ void TetrahedronModel::setTexture(QImage image) {
 }
 
 /*********************************************四面体光照模型*********************************************/
-TetrahedronLightModel::TetrahedronLightModel() :
+TetrahedronLightModel::TetrahedronLightModel(QVector3D light_position, QVector3D light_color, double light_intensity) :
   normal_vertex_obj_(new QOpenGLBuffer()),
-  light_position_(QVector3D(0.5, 0.5, 0.5)),
-  light_intensity_(QVector3D(0.1, 0.1, 0.1)),
-  light_color_(QVector3D(1.0, 1.0, 1.0)) {
+  light_position_(light_position),
+  light_color_(light_color),
+  light_intensity_(QVector3D(light_intensity, light_intensity, light_intensity)) {
   // 法向量求解
   for (size_t i =0 ; i < 4 ; i++) {
     std::array<GLfloat, 3> point1, point2, point3;

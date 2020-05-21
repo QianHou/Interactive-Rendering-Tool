@@ -19,6 +19,9 @@ class InteractiveRenderingTool : public QWidget {
 
  public slots:
   void onCameraPositionChange();
+  void onLightPositionChange(double value);
+  void onLightColorChange(double value);
+  void onLightIntensityChange(double value);
 
  private:
   Ui::InteractiveRenderingTool* ui_;

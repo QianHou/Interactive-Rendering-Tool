@@ -22,6 +22,21 @@ class RenderingViewer : public QOpenGLWidget {
 
   QVector3D getCameraPosition() { return camera_pos_; }
 
+  void setLightPosition(double x, double y, double z) {
+    light_pos_ = QVector3D(x, y, z);
+    tetrahedron_->setLightPosition(light_pos_);
+  }
+
+  void setLightColor(double r, double g, double b) {
+    light_color_ = QVector3D(r, g, b);
+    tetrahedron_->setLightColor(light_color_);
+  }
+
+  void setLightIntensity(double intensity) {
+    light_intensity_ = intensity;
+    tetrahedron_->setLightItensity(light_intensity_);
+  }
+
  protected:
   void initializeGL() override;
   void paintGL() override;
@@ -49,10 +64,14 @@ class RenderingViewer : public QOpenGLWidget {
   QVector3D camera_pos_;
   QVector3D observe_center_;
 
+  QVector3D light_pos_;
+  QVector3D light_color_;
+  double light_intensity_;
+
   TetrahedronLightModel*  tetrahedron_;
   PointLightModel* pointlight_;
 
-  float aspect_ratio_ = 0;
+  double aspect_ratio_ = 0;
 
   struct {
     struct {
