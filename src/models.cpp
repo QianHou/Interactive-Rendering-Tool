@@ -74,8 +74,8 @@ TetrahedronLightModel::TetrahedronLightModel(QVector3D light_position, QVector3D
 
     std::array<GLfloat, 3> vector1, vector2;
     for (size_t j = 0 ; j < 3 ; j++) {
-      vector1[j] = point2[j] - point1[j];
-      vector2[j] = point1[j] - point3[j];
+      vector1[j] = point3[j] - point1[j];
+      vector2[j] = point1[j] - point2[j];
     }
 
     GLfloat normal_vertex[3] = {0};
@@ -114,7 +114,7 @@ void TetrahedronLightModel::init() {
 
   normal_vertex_obj_->create();
   normal_vertex_obj_->bind();
-  normal_vertex_obj_->allocate(vertex_buf_, 4*3*3* sizeof(GLfloat));
+  normal_vertex_obj_->allocate(normal_vertex_buf_, 4*3*3* sizeof(GLfloat));
   fuc_->glEnableVertexAttribArray(SHADER_LIGHT_OFFSET);
   fuc_->glVertexAttribPointer(SHADER_LIGHT_OFFSET, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), 0);
   normal_vertex_obj_->release();

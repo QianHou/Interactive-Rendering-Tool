@@ -38,8 +38,8 @@ class TetrahedronModel {
     0.5f, 0.0f, -0.2887f,
     0.0f, 0.0f, 0.5774f,
     // face 2
-    -0.5f, 0.0f, -0.2887f,
     0.5f, 0.0f, -0.2887f,
+    -0.5f, 0.0f, -0.2887f,
     0.0f, 0.8165f, 0.0f,
     // face 3
     -0.5f, 0.0f, -0.2887f,
@@ -47,8 +47,8 @@ class TetrahedronModel {
     0.0f, 0.8165f, 0.0f,
     // face 4
     0.5f, 0.0f, -0.2887f,
-    0.0f, 0.0f, 0.5774f,
     0.0f, 0.8165f, 0.0f,
+    0.0f, 0.0f, 0.5774f,
   };
 
   const GLfloat TEXTURE_INDEX_INIT_DATA[24] = {
