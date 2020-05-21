@@ -49,10 +49,10 @@ class RenderingViewer : public QOpenGLWidget {
   QVector3D camera_pos_;
   QVector3D observe_center_;
 
-  TetrahedronModel* tetrahedron_;
+  TetrahedronLightModel*  tetrahedron_;
+  PointLightModel* pointlight_;
 
   float aspect_ratio_ = 0;
-
 
   struct {
     struct {

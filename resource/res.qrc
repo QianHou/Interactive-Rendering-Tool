@@ -1,7 +1,10 @@
 <RCC>
   <qresource>
-    <file>shaders/fragment.shader</file>
-    <file>shaders/vertex.shader</file>
+    <file>shaders/tripoints.vs</file>
+    <file>shaders/tripoints.fs</file>
+    <file>shaders/tripoints_light.vs</file>
+    <file>shaders/tripoints_light.fs</file>
+    <file>shaders/pointlight.fs</file>
     <file>images/default.jpeg</file>
   </qresource>
 </RCC>

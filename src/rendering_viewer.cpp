@@ -7,7 +7,8 @@ RenderingViewer::RenderingViewer(QWidget *parent) :
   QOpenGLWidget(parent),
   fuc_(new QOpenGLFunctions()),
   array_obj_(new QOpenGLVertexArrayObject()),
-  tetrahedron_(new TetrahedronModel()),
+  tetrahedron_(new TetrahedronLightModel()),
+  pointlight_(new PointLightModel()),
   camera_pos_(0.0f, 3.0f, 0.0f),
   observe_center_(0.0f, 0.0f, 0.0f) {
 }
@@ -26,6 +27,7 @@ void RenderingViewer::initializeGL() {
   array_obj_->bind();
 
   tetrahedron_->init();
+  pointlight_->init();
 
   array_obj_->release();
 }
@@ -33,12 +35,22 @@ void RenderingViewer::initializeGL() {
 void RenderingViewer::paintGL() {
   fuc_->glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-  QMatrix4x4 mvp_matrix;
-  mvp_matrix.perspective(45.0f, aspect_ratio_, 0.1f, 100.0f);
-  mvp_matrix.lookAt(camera_pos_, observe_center_, QVector3D(0.0f, 0.0f, 1.0f));
+  QMatrix4x4 view_matrix;
+  view_matrix.perspective(45.0f, aspect_ratio_, 0.1f, 100.0f);
+  view_matrix.lookAt(camera_pos_, observe_center_, QVector3D(0.0f, 0.0f, 1.0f));
 
   array_obj_->bind();
-  tetrahedron_->paint(mvp_matrix);
+
+  QMatrix4x4 tetrahedron_model_matrix;
+  tetrahedron_model_matrix.translate(0.0f, 0.0f, 0.0f);
+  tetrahedron_model_matrix.scale(1.0f);
+  tetrahedron_->paint(view_matrix, tetrahedron_model_matrix);
+
+  QMatrix4x4 pointlight_model_matrix;
+  pointlight_model_matrix.translate(0.5f, 0.5f, 0.5f);
+  pointlight_model_matrix.scale(0.2f);
+  pointlight_->paint(view_matrix * pointlight_model_matrix);
+
   array_obj_->release();
 
   // request for drawing update
