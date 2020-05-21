@@ -7,7 +7,7 @@
 #include <QOpenGLTexture>
 
 #define SHADER_VERTEX_OFFSET  (0)
-#define SHADER_COLOR_OFFSET   (1)
+#define SHADER_TEXTURE_INDEX_OFFSET   (1)
 
 class TetrahedronModel {
  public:

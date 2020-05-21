@@ -29,8 +29,8 @@ void TetrahedronModel::init() {
   texture_index_obj_->create();
   texture_index_obj_->bind();
   texture_index_obj_->allocate(texture_index_buf_, 4*3*2* sizeof(GLfloat));
-  fuc_->glEnableVertexAttribArray(2);
-  fuc_->glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), 0);
+  fuc_->glEnableVertexAttribArray(SHADER_TEXTURE_INDEX_OFFSET);
+  fuc_->glVertexAttribPointer(SHADER_TEXTURE_INDEX_OFFSET, 2, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), 0);
   texture_index_obj_->release();
 
   texture_ = new QOpenGLTexture(QImage(":images/default.jpeg"));

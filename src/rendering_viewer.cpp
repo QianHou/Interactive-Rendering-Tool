@@ -36,7 +36,6 @@ void RenderingViewer::initializeGL() {
   tetrahedron_->init();
 
   array_obj_->release();
-
 }
 
 void RenderingViewer::paintGL() {
