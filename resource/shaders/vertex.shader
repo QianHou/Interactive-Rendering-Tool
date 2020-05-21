@@ -1,15 +1,15 @@
 #version 330
 
 layout(location = 0) in vec3 posVertex;
-layout(location = 1) in vec3 colVertex;
-layout(location = 2) in vec2 uvVertex;
+layout(location = 1) in vec3 colorsVertex;
+layout(location = 2) in vec2 textureIndexVertex;
 
-uniform mat4 MVP;
-out vec4 cols;
-out vec2 uv;
+uniform mat4 viewMatrix;
+out vec4 colors;
+out vec2 textureIndex;
 
 void main() {
-  gl_Position = MVP * vec4(posVertex, 1.0f);
-  cols = vec4(colVertex, 1.0f);
-  uv = uvVertex;
+  gl_Position = viewMatrix * vec4(posVertex, 1.0f);
+  colors = vec4(colorsVertex, 1.0f);
+  textureIndex = textureIndexVertex;
 }
