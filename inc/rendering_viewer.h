@@ -22,19 +22,20 @@ class RenderingViewer : public QOpenGLWidget {
 
   QVector3D getCameraPosition() { return camera_pos_; }
 
-  void setLightPosition(double x, double y, double z) {
-    light_pos_ = QVector3D(x, y, z);
-    tetrahedron_->setLightPosition(light_pos_);
+  void setLightPosition(double x, double y, double z, int light_index) {
+    if (light_index<0 || light_index>1) return;
+    tetrahedron_->setLightPosition(QVector3D(x, y, z), light_index);
   }
-
-  void setLightColor(double r, double g, double b) {
-    light_color_ = QVector3D(r, g, b);
-    tetrahedron_->setLightColor(light_color_);
+  void setLightColor(double r, double g, double b, int light_index) {
+    if (light_index<0 || light_index>1) return;
+    tetrahedron_->setLightColor(QVector3D(r, g, b), light_index);
   }
-
-  void setLightIntensity(double intensity) {
-    light_intensity_ = intensity;
-    tetrahedron_->setLightItensity(light_intensity_);
+  void setLightIntensity(double intensity, int light_index) {
+    if (light_index<0 || light_index>1) return;
+    tetrahedron_->setLightItensity(intensity, light_index);
+  }
+  void setLightAmbient(double ambient) {
+    tetrahedron_->setLightAmbient(ambient);
   }
 
  protected:
@@ -64,12 +65,8 @@ class RenderingViewer : public QOpenGLWidget {
   QVector3D camera_pos_;
   QVector3D observe_center_;
 
-  QVector3D light_pos_;
-  QVector3D light_color_;
-  double light_intensity_;
-
   TetrahedronLightModel*  tetrahedron_;
-  PointLightModel* pointlight_;
+  std::array<PointLightModel*, 2> pointlights_;
 
   double aspect_ratio_ = 0;
 

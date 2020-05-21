@@ -61,22 +61,49 @@ class TetrahedronModel {
 
 class TetrahedronLightModel : public TetrahedronModel {
  public:
-  TetrahedronLightModel(QVector3D light_position, QVector3D light_color, double light_intensity);
+  TetrahedronLightModel();
 
   void init();
   void paint(QMatrix4x4 view_matrix, QMatrix4x4 model_matrix);
 
-  void setLightPosition(QVector3D position) { light_position_ = position; }
-  void setLightColor(QVector3D color) { light_color_ = color; }
-  void setLightItensity(double itensity) { light_intensity_ = QVector3D(itensity, itensity, itensity); }
+  void setLightPosition(QVector3D position, int light_index) {
+    if (light_index<0 || light_index>1) return;
+    light_position_[light_index] = position;
+  }
+  void setLightColor(QVector3D color, int light_index) {
+    if (light_index<0 || light_index>1) return;
+    light_color_[light_index] = color;
+  }
+  void setLightItensity(double itensity, int light_index) {
+    if (light_index<0 || light_index>1) return;
+    light_intensity_[light_index] = QVector3D(itensity, itensity, itensity);
+  }
+  void setLightAmbient(double ambient) {
+    light_ambient_ = QVector3D(ambient, ambient, ambient);
+  }
+
+  QVector3D getLightPosition(int light_index) {
+    if (light_index<0 || light_index>1) return QVector3D(0, 0, 0);
+    return light_position_[light_index];
+  }
+  QVector3D getLightColor(int light_index) {
+    if (light_index<0 || light_index>1) return QVector3D(0, 0, 0);
+    return light_color_[light_index];
+  }
+  double getLightIntensity(int light_index) {
+    if (light_index<0 || light_index>1) return 0;
+    return light_intensity_[light_index].x();
+  }
 
  private:
   QOpenGLBuffer* normal_vertex_obj_;
   GLfloat normal_vertex_buf_[36];
 
-  QVector3D light_position_;
-  QVector3D light_color_;
-  QVector3D light_intensity_;
+  std::array<QVector3D, 2> light_position_;
+  std::array<QVector3D, 2>  light_color_;
+  std::array<QVector3D, 2>  light_intensity_;
+
+  QVector3D light_ambient_;
 };
 
 class PointLightModel {

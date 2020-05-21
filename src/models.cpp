@@ -60,11 +60,12 @@ void TetrahedronModel::setTexture(QImage image) {
 }
 
 /*********************************************四面体光照模型*********************************************/
-TetrahedronLightModel::TetrahedronLightModel(QVector3D light_position, QVector3D light_color, double light_intensity) :
+TetrahedronLightModel::TetrahedronLightModel() :
   normal_vertex_obj_(new QOpenGLBuffer()),
-  light_position_(light_position),
-  light_color_(light_color),
-  light_intensity_(QVector3D(light_intensity, light_intensity, light_intensity)) {
+  light_ambient_(QVector3D(0, 0, 0)),
+  light_position_({QVector3D(0.5, 0.5, 0.5), QVector3D(-0.5, -0.5, -0.5)}),
+  light_color_({QVector3D(1.0, 1.0, 1.0), QVector3D(1.0, 1.0, 1.0)}),
+  light_intensity_({QVector3D(0.1, 0.1, 0.1), QVector3D(0.1, 0.1, 0.1)}) {
   // 法向量求解
   for (size_t i =0 ; i < 4 ; i++) {
     std::array<GLfloat, 3> point1, point2, point3;
@@ -126,11 +127,20 @@ void TetrahedronLightModel::paint(QMatrix4x4 view_matrix, QMatrix4x4 model_matri
   texture_->bind();
   shader_->bind();
   fuc_->glDrawArrays(GL_TRIANGLES, 0, 4*3);
+
   shader_->setUniformValue(shader_->uniformLocation("viewMatrix"), view_matrix);
   shader_->setUniformValue(shader_->uniformLocation("modelMatrix"), model_matrix);
-  shader_->setUniformValue(shader_->uniformLocation("lightPosition"), light_position_);
-  shader_->setUniformValue(shader_->uniformLocation("lightColor"), light_color_);
-  shader_->setUniformValue(shader_->uniformLocation("lightIntensity"), light_intensity_);
+
+  shader_->setUniformValue(shader_->uniformLocation("lightAmbient"), light_ambient_);
+
+  shader_->setUniformValue(shader_->uniformLocation("lightPosition1"), light_position_[0]);
+  shader_->setUniformValue(shader_->uniformLocation("lightColor1"), light_color_[0]);
+  shader_->setUniformValue(shader_->uniformLocation("lightIntensity1"), light_intensity_[0]);
+
+  shader_->setUniformValue(shader_->uniformLocation("lightPosition2"), light_position_[1]);
+  shader_->setUniformValue(shader_->uniformLocation("lightColor2"), light_color_[1]);
+  shader_->setUniformValue(shader_->uniformLocation("lightIntensity2"), light_intensity_[1]);
+
   shader_->release();
 }
 
