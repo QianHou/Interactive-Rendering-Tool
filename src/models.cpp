@@ -1,8 +1,10 @@
 /* Copyright [2020] <houqian & xiaotong> */
 #include "inc/models.h"
+#include <iostream>
 
 TetrahedronModel::TetrahedronModel() :
   fuc_(new QOpenGLFunctions()),
+  shader_(new QOpenGLShaderProgram()),
   vertex_obj_(new QOpenGLBuffer(QOpenGLBuffer::Type::VertexBuffer)),
   texture_index_obj_(new QOpenGLBuffer(QOpenGLBuffer::Type::VertexBuffer)) {
   memcpy(this->vertex_buf_, VERTEX_INIT_DATA, sizeof(this->vertex_buf_));
@@ -11,6 +13,7 @@ TetrahedronModel::TetrahedronModel() :
 
 TetrahedronModel::~TetrahedronModel() {
   delete fuc_;
+  delete shader_;
   delete vertex_obj_;
   delete texture_index_obj_;
   delete texture_;
@@ -18,6 +21,12 @@ TetrahedronModel::~TetrahedronModel() {
 
 void TetrahedronModel::init() {
   fuc_->initializeOpenGLFunctions();
+
+  shader_->addShaderFromSourceFile(QOpenGLShader::Vertex, ":shaders/vertex.shader");
+  shader_->addShaderFromSourceFile(QOpenGLShader::Fragment, ":shaders/fragment.shader");
+  if (!shader_->link()) {
+    std::cout << "[ERROR] shaders link failed" << std::endl;
+  }
 
   vertex_obj_->create();
   vertex_obj_->bind();
@@ -36,8 +45,12 @@ void TetrahedronModel::init() {
   texture_ = new QOpenGLTexture(QImage(":images/default.jpeg"));
 }
 
-void TetrahedronModel::bind() {
+void TetrahedronModel::paint(QMatrix4x4 mvp_matrix) {
   texture_->bind();
+  shader_->bind();
+  fuc_->glDrawArrays(GL_TRIANGLES, 0, 4*3);
+  shader_->setUniformValue(shader_->uniformLocation("viewMatrix"), mvp_matrix);
+  shader_->release();
 }
 
 void TetrahedronModel::setTexture(QImage image) {

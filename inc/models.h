@@ -5,6 +5,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
 #include <QOpenGLTexture>
+#include <QOpenGLShaderProgram>
 
 #define SHADER_VERTEX_OFFSET  (0)
 #define SHADER_TEXTURE_INDEX_OFFSET   (1)
@@ -15,11 +16,12 @@ class TetrahedronModel {
   ~TetrahedronModel();
 
   void init();
-  void bind();
+  void paint(QMatrix4x4 mvp_matrix);
   void setTexture(QImage image);
 
  private:
   QOpenGLFunctions* fuc_;
+  QOpenGLShaderProgram* shader_;  // 渲染器对象
 
   QOpenGLBuffer* vertex_obj_;
   QOpenGLBuffer* texture_index_obj_;
@@ -54,6 +56,10 @@ class TetrahedronModel {
     0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
     0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
   };
+};
+
+class PointLightModel {
+
 };
 
 #endif  // INC_MODULES_H_

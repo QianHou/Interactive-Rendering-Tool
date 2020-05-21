@@ -6,7 +6,6 @@
 RenderingViewer::RenderingViewer(QWidget *parent) :
   QOpenGLWidget(parent),
   fuc_(new QOpenGLFunctions()),
-  shader_(new QOpenGLShaderProgram()),
   array_obj_(new QOpenGLVertexArrayObject()),
   tetrahedron_(new TetrahedronModel()),
   camera_pos_(0.0f, 3.0f, 0.0f),
@@ -15,7 +14,6 @@ RenderingViewer::RenderingViewer(QWidget *parent) :
 
 RenderingViewer::~RenderingViewer() {
   delete fuc_;
-  delete shader_;
   delete array_obj_;
 }
 
@@ -23,12 +21,6 @@ void RenderingViewer::initializeGL() {
   fuc_->initializeOpenGLFunctions();
   fuc_->glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
   fuc_->glEnable(GL_DEPTH_TEST);
-
-  shader_->addShaderFromSourceFile(QOpenGLShader::Vertex, ":shaders/vertex.shader");
-  shader_->addShaderFromSourceFile(QOpenGLShader::Fragment, ":shaders/fragment.shader");
-  if (!shader_->link()) {
-    std::cout << "[ERROR] shaders link failed" << std::endl;
-  }
 
   array_obj_->create();
   array_obj_->bind();
@@ -41,17 +33,12 @@ void RenderingViewer::initializeGL() {
 void RenderingViewer::paintGL() {
   fuc_->glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-  array_obj_->bind();
-  tetrahedron_->bind();
-  shader_->bind();
-
   QMatrix4x4 mvp_matrix;
   mvp_matrix.perspective(45.0f, aspect_ratio_, 0.1f, 100.0f);
   mvp_matrix.lookAt(camera_pos_, observe_center_, QVector3D(0.0f, 0.0f, 1.0f));
-  fuc_->glDrawArrays(GL_TRIANGLES, 0, 4*3);
-  shader_->setUniformValue(shader_->uniformLocation("viewMatrix"), mvp_matrix);
 
-  shader_->release();
+  array_obj_->bind();
+  tetrahedron_->paint(mvp_matrix);
   array_obj_->release();
 
   // request for drawing update

@@ -5,12 +5,8 @@
 #include <QWidget>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
-#include <QOpenGLShaderProgram>
-#include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
-#include <QElapsedTimer>
 #include <QMouseEvent>
-#include <QOpenGLTexture>
 #include <QWheelEvent>
 #include "inc/models.h"
 
@@ -47,7 +43,6 @@ class RenderingViewer : public QOpenGLWidget {
 
  private:
   QOpenGLFunctions* fuc_;         // Qt封装的OpenGL函数对象
-  QOpenGLShaderProgram* shader_;  // 渲染器对象
 
   QOpenGLVertexArrayObject* array_obj_;
 
