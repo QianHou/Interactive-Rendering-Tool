@@ -34,6 +34,7 @@ qt5_wrap_cpp(MOC_LIBS
   inc/interactive_rendering_tool.h
   inc/rendering_viewer.h
   inc/models.h
+  inc/object_loader.h
 )
 qt5_add_resources(QRC_LIBS
   resource/res.qrc
@@ -44,6 +45,7 @@ add_executable(interactive_rendering_tool
   src/interactive_rendering_tool.cpp
   src/rendering_viewer.cpp
   src/models.cpp
+  src/object_loader.cpp
   ${MOC_LIBS}
   ${QRC_LIBS}
 )
