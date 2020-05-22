@@ -6,7 +6,8 @@
 TetrahedronModel::TetrahedronModel() :
   fuc_(new QOpenGLFunctions()),
   shader_(new QOpenGLShaderProgram()),
-  loader_(new ObjectLoader(ObjectData::TETRAHEDRO_VERTEX, ObjectData::TETRAHEDRO_TEXTURE_INDEX)),
+  // loader_(new ObjectLoader(ObjectData::TETRAHEDRO_VERTEX, ObjectData::TETRAHEDRO_TEXTURE_INDEX)),
+  loader_(new ObjectLoader(":objects/stickman.obj")),
   vertex_obj_(new QOpenGLBuffer(QOpenGLBuffer::Type::VertexBuffer)),
   texture_index_obj_(new QOpenGLBuffer(QOpenGLBuffer::Type::VertexBuffer)) {}
 
@@ -29,7 +30,6 @@ void TetrahedronModel::init() {
 
   vertex_obj_->create();
   vertex_obj_->bind();
-  // vertex_obj_->allocate(vertex_buf_, 4*3*3* sizeof(GLfloat));
   vertex_obj_->allocate(loader_->vertex_.buffer, loader_->vertex_.size * sizeof(GLfloat));
   fuc_->glEnableVertexAttribArray(SHADER_VERTEX_OFFSET);
   fuc_->glVertexAttribPointer(SHADER_VERTEX_OFFSET, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), 0);
@@ -37,7 +37,6 @@ void TetrahedronModel::init() {
 
   texture_index_obj_->create();
   texture_index_obj_->bind();
-  // texture_index_obj_->allocate(texture_index_buf_, 4*3*2* sizeof(GLfloat));
   texture_index_obj_->allocate(loader_->texture_index_.buffer, loader_->texture_index_.size * sizeof(GLfloat));
   fuc_->glEnableVertexAttribArray(SHADER_TEXTURE_INDEX_OFFSET);
   fuc_->glVertexAttribPointer(SHADER_TEXTURE_INDEX_OFFSET, 2, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), 0);
