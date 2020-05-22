@@ -6,6 +6,7 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLTexture>
 #include <QOpenGLShaderProgram>
+#include <QOpenGLVertexArrayObject>
 #include "inc/object_loader.h"
 
 #define SHADER_VERTEX_OFFSET          (0)
@@ -28,6 +29,7 @@ class TetrahedronModel {
 
   QOpenGLBuffer* vertex_obj_;
   QOpenGLBuffer* texture_index_obj_;
+  QOpenGLVertexArrayObject* array_obj_;
 
   QOpenGLTexture* texture_;
 };
@@ -92,6 +94,7 @@ class PointLightModel {
   ObjectLoader* loader_;
 
   QOpenGLBuffer* vertex_obj_;
+  QOpenGLVertexArrayObject* array_obj_;
 };
 
 #endif  // INC_MODELS_H_

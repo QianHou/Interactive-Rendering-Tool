@@ -60,8 +60,6 @@ class RenderingViewer : public QOpenGLWidget {
  private:
   QOpenGLFunctions* fuc_;         // Qt封装的OpenGL函数对象
 
-  QOpenGLVertexArrayObject* array_obj_;
-
   QVector3D camera_pos_;
   QVector3D observe_center_;
 

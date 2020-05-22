@@ -6,6 +6,8 @@
     <file>shaders/tripoints_light.fs</file>
     <file>shaders/pointlight.fs</file>
     <file>images/default.jpeg</file>
-    <file>objects/stickman.obj</file>
+    <file>objects/tree.obj</file>
+    <file>objects/penguin.obj</file>
+    <file>objects/ball.obj</file>
   </qresource>
 </RCC>

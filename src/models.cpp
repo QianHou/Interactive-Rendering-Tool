@@ -6,10 +6,10 @@
 TetrahedronModel::TetrahedronModel() :
   fuc_(new QOpenGLFunctions()),
   shader_(new QOpenGLShaderProgram()),
-  // loader_(new ObjectLoader(ObjectData::TETRAHEDRO_VERTEX, ObjectData::TETRAHEDRO_TEXTURE_INDEX)),
-  loader_(new ObjectLoader(":objects/stickman.obj")),
+  loader_(new ObjectLoader(":objects/penguin.obj")),
   vertex_obj_(new QOpenGLBuffer(QOpenGLBuffer::Type::VertexBuffer)),
-  texture_index_obj_(new QOpenGLBuffer(QOpenGLBuffer::Type::VertexBuffer)) {}
+  texture_index_obj_(new QOpenGLBuffer(QOpenGLBuffer::Type::VertexBuffer)),
+  array_obj_(new QOpenGLVertexArrayObject()) {}
 
 TetrahedronModel::~TetrahedronModel() {
   delete fuc_;
@@ -28,6 +28,11 @@ void TetrahedronModel::init() {
     std::cout << "[ERROR] shaders link failed" << std::endl;
   }
 
+  texture_ = new QOpenGLTexture(QImage(":images/default.jpeg"));
+
+  array_obj_->create();
+  array_obj_->bind();
+
   vertex_obj_->create();
   vertex_obj_->bind();
   vertex_obj_->allocate(loader_->vertex_.buffer, loader_->vertex_.size * sizeof(GLfloat));
@@ -42,15 +47,19 @@ void TetrahedronModel::init() {
   fuc_->glVertexAttribPointer(SHADER_TEXTURE_INDEX_OFFSET, 2, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), 0);
   texture_index_obj_->release();
 
-  texture_ = new QOpenGLTexture(QImage(":images/default.jpeg"));
+  array_obj_->release();
 }
 
 void TetrahedronModel::paint(QMatrix4x4 mvp_matrix) {
+  array_obj_->bind();
+
   texture_->bind();
   shader_->bind();
   fuc_->glDrawArrays(GL_TRIANGLES, 0, loader_->vertex_.size/3);
   shader_->setUniformValue(shader_->uniformLocation("viewMatrix"), mvp_matrix);
   shader_->release();
+
+  array_obj_->release();
 }
 
 void TetrahedronModel::setTexture(QImage image) {
@@ -75,6 +84,11 @@ void TetrahedronLightModel::init() {
     std::cout << "[ERROR] shaders link failed" << std::endl;
   }
 
+  texture_ = new QOpenGLTexture(QImage(":images/default.jpeg"));
+
+  array_obj_->create();
+  array_obj_->bind();
+
   vertex_obj_->create();
   vertex_obj_->bind();
   vertex_obj_->allocate(loader_->vertex_.buffer, loader_->vertex_.size * sizeof(GLfloat));
@@ -96,10 +110,13 @@ void TetrahedronLightModel::init() {
   fuc_->glVertexAttribPointer(SHADER_LIGHT_OFFSET, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), 0);
   normal_vertex_obj_->release();
 
-  texture_ = new QOpenGLTexture(QImage(":images/default.jpeg"));
+  array_obj_->release();
+
 }
 
 void TetrahedronLightModel::paint(QMatrix4x4 view_matrix, QMatrix4x4 model_matrix) {
+  array_obj_->bind();
+
   texture_->bind();
   shader_->bind();
   fuc_->glDrawArrays(GL_TRIANGLES, 0, loader_->vertex_.size/3);
@@ -118,6 +135,8 @@ void TetrahedronLightModel::paint(QMatrix4x4 view_matrix, QMatrix4x4 model_matri
   shader_->setUniformValue(shader_->uniformLocation("lightIntensity2"), light_intensity_[1]);
 
   shader_->release();
+
+  array_obj_->release();
 }
 
 /*********************************************点光源模型*********************************************/
@@ -125,7 +144,8 @@ PointLightModel::PointLightModel() :
   fuc_(new QOpenGLFunctions()),
   shader_(new QOpenGLShaderProgram()),
   loader_(new ObjectLoader(ObjectData::TETRAHEDRO_VERTEX, ObjectData::TETRAHEDRO_TEXTURE_INDEX)),
-  vertex_obj_(new QOpenGLBuffer(QOpenGLBuffer::Type::VertexBuffer)) {}
+  vertex_obj_(new QOpenGLBuffer(QOpenGLBuffer::Type::VertexBuffer)),
+  array_obj_(new QOpenGLVertexArrayObject()) {}
 
 PointLightModel::~PointLightModel() {
   delete fuc_;
@@ -142,17 +162,26 @@ void PointLightModel::init() {
     std::cout << "[ERROR] shaders link failed" << std::endl;
   }
 
+  array_obj_->create();
+  array_obj_->bind();
+
   vertex_obj_->create();
   vertex_obj_->bind();
   vertex_obj_->allocate(loader_->vertex_.buffer, loader_->vertex_.size * sizeof(GLfloat));
   fuc_->glEnableVertexAttribArray(SHADER_VERTEX_OFFSET);
   fuc_->glVertexAttribPointer(SHADER_VERTEX_OFFSET, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), 0);
   vertex_obj_->release();
+
+  array_obj_->release();
 }
 
 void PointLightModel::paint(QMatrix4x4 mvp_matrix) {
+  array_obj_->bind();
+
   shader_->bind();
   fuc_->glDrawArrays(GL_TRIANGLES, 0, loader_->vertex_.size/3);
   shader_->setUniformValue(shader_->uniformLocation("viewMatrix"), mvp_matrix);
   shader_->release();
+
+  array_obj_->release();
 }

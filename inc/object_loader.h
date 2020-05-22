@@ -9,23 +9,25 @@
 
 class ObjectLoader {
  public:
-  typedef struct {
-    GLfloat* buffer = NULL;
-    int size;
-  }ObjectBufferType;
-
- public:
-  ObjectLoader(std::vector<GLfloat> vertex_data, std::vector<GLfloat> texture_index_data);
+  ObjectLoader(const std::vector<GLfloat>& vertex_data, const std::vector<GLfloat>& texture_index_data, const std::vector<GLfloat>& normal_vector_data);
+  ObjectLoader(const std::vector<GLfloat>& vertex_data, const std::vector<GLfloat>& texture_index_data);
   explicit ObjectLoader(const QString & obj_file_path);
 
-  void reloadObject(std::vector<GLfloat> vertex_data, std::vector<GLfloat> texture_index_data);
+  void reloadObject(const std::vector<GLfloat>& vertex_data, const std::vector<GLfloat>& texture_index_data, const std::vector<GLfloat>& normal_vector_data);
+  void reloadObject(const std::vector<GLfloat>& vertex_data, const std::vector<GLfloat>& texture_index_data);
   void reloadObject(const QString & obj_file_path);
   void reloadObject(std::string obj_file_path);
 
   void bufferClear();
 
  public:
-  ObjectBufferType vertex_, normal_vector_, texture_index_;
+  struct {
+    GLfloat* buffer = NULL;
+    int size;
+  } vertex_, normal_vector_, texture_index_;
+
+ private:
+  void calcNormalVector(std::vector<GLfloat> vertex_data);
 };
 
 namespace ObjectData {
