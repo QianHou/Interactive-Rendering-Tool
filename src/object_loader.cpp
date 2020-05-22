@@ -218,7 +218,7 @@ void ObjectLoader::reloadObject(const QString & obj_file_path) {
   this->reloadObject(vertex_data, texture_index_data, normal_vector_data);
 }
 
-void ObjectLoader::reloadObject(std::string obj_file_path) {
+void ObjectLoader::reloadObject(const std::string& obj_file_path) {
   this->reloadObject(QString::fromStdString(obj_file_path));
 }
 
@@ -231,7 +231,7 @@ void ObjectLoader::bufferClear() {
   texture_index_.buffer = NULL;
 }
 
-void ObjectLoader::calcNormalVector(std::vector<GLfloat> vertex_data) {
+void ObjectLoader::calcNormalVector(const std::vector<GLfloat>& vertex_data) {
   if (!vertex_data.empty()) {
     std::cout << "[INFO] calcuate normal vevtor by vertex" << std::endl;
 

@@ -16,7 +16,7 @@ class ObjectLoader {
   void reloadObject(const std::vector<GLfloat>& vertex_data, const std::vector<GLfloat>& texture_index_data, const std::vector<GLfloat>& normal_vector_data);
   void reloadObject(const std::vector<GLfloat>& vertex_data, const std::vector<GLfloat>& texture_index_data);
   void reloadObject(const QString & obj_file_path);
-  void reloadObject(std::string obj_file_path);
+  void reloadObject(const std::string& obj_file_path);
 
   void bufferClear();
 
@@ -27,7 +27,7 @@ class ObjectLoader {
   } vertex_, normal_vector_, texture_index_;
 
  private:
-  void calcNormalVector(std::vector<GLfloat> vertex_data);
+  void calcNormalVector(const std::vector<GLfloat>& vertex_data);
 };
 
 namespace ObjectData {
@@ -58,7 +58,7 @@ namespace ObjectData {
     // surface 3
     0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
     // surface 4
-    // 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+    0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
   };
 };
 

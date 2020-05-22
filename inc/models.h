@@ -7,45 +7,65 @@
 #include <QOpenGLTexture>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
+#include <vector>
 #include "inc/object_loader.h"
 
 #define SHADER_VERTEX_OFFSET          (0)
 #define SHADER_TEXTURE_INDEX_OFFSET   (1)
 #define SHADER_LIGHT_OFFSET           (2)
 
-class TetrahedronModel {
+class PurityModel : public ObjectLoader {
  public:
-  TetrahedronModel();
-  ~TetrahedronModel();
+  PurityModel();
+  ~PurityModel();
 
   void init();
-  void paint(QMatrix4x4 mvp_matrix);
-  void setTexture(QImage image);
+  void paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix);
+
+ protected:
+  virtual QString getVertexShaderPath()   { return ":shaders/tripoints.vs"; }
+  virtual QString getFragmentShaderPath() { return ":shaders/purity.fs"; }
 
  protected:
   QOpenGLFunctions* fuc_;
   QOpenGLShaderProgram* shader_;  // 渲染器对象
-  ObjectLoader* loader_;
 
   QOpenGLBuffer* vertex_obj_;
-  QOpenGLBuffer* texture_index_obj_;
   QOpenGLVertexArrayObject* array_obj_;
-
-  QOpenGLTexture* texture_;
 };
 
-class TetrahedronLightModel : public TetrahedronModel {
+class TextureModel : public PurityModel {
  public:
-  TetrahedronLightModel();
+  TextureModel();
+  ~TextureModel();
 
   void init();
-  void paint(QMatrix4x4 view_matrix, QMatrix4x4 model_matrix);
+  void paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix);
 
-  void setLightPosition(QVector3D position, int light_index) {
+  void setTextureImage(QImage image);
+
+ protected:
+  virtual QString getVertexShaderPath()   { return ":shaders/tripoints.vs"; }
+  virtual QString getFragmentShaderPath() { return ":shaders/tripoints.fs"; }
+
+ protected:
+  QOpenGLBuffer* texture_index_obj_;
+  QOpenGLTexture* texture_ = NULL;
+};
+
+class LightTextureModel : public TextureModel {
+ public:
+  LightTextureModel();
+  ~LightTextureModel();
+
+  void init();
+  void paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix);
+
+  void setLightPosition(const QVector3D& position, int light_index) {
     if (light_index<0 || light_index>1) return;
     light_position_[light_index] = position;
   }
-  void setLightColor(QVector3D color, int light_index) {
+  void setLightColor(const QVector3D& color, int light_index) {
     if (light_index<0 || light_index>1) return;
     light_color_[light_index] = color;
   }
@@ -70,6 +90,10 @@ class TetrahedronLightModel : public TetrahedronModel {
     return light_intensity_[light_index].x();
   }
 
+ protected:
+  virtual QString getVertexShaderPath()   { return ":shaders/tripoints_light.vs"; }
+  virtual QString getFragmentShaderPath() { return ":shaders/tripoints_light.fs"; }
+
  private:
   QOpenGLBuffer* normal_vertex_obj_;
 
@@ -78,23 +102,6 @@ class TetrahedronLightModel : public TetrahedronModel {
   std::array<QVector3D, 2>  light_intensity_;
 
   QVector3D light_ambient_;
-};
-
-class PointLightModel {
- public:
-  PointLightModel();
-  ~PointLightModel();
-
-  void init();
-  void paint(QMatrix4x4 mvp_matrix);
-
- private:
-  QOpenGLFunctions* fuc_;
-  QOpenGLShaderProgram* shader_;  // 渲染器对象
-  ObjectLoader* loader_;
-
-  QOpenGLBuffer* vertex_obj_;
-  QOpenGLVertexArrayObject* array_obj_;
 };
 
 #endif  // INC_MODELS_H_

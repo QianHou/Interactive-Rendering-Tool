@@ -4,12 +4,15 @@
 #include <iostream>
 
 RenderingViewer::RenderingViewer(QWidget *parent) :
-  QOpenGLWidget(parent),
   camera_pos_(0.0f, 3.0f, 0.0f),
   observe_center_(0.0f, 0.0f, 0.0f),
+  QOpenGLWidget(parent),
   fuc_(new QOpenGLFunctions()),
-  tetrahedron_(new TetrahedronLightModel()),
-  pointlights_({new PointLightModel(), new PointLightModel()}) {
+  objects_(new LightTextureModel()),
+  pointlights_({new PurityModel(), new PurityModel()}) {
+  for (const auto pointlight : pointlights_) {
+    pointlight->reloadObject(QString(":/objects/ball.obj"));
+  }
 }
 
 RenderingViewer::~RenderingViewer() {
@@ -21,10 +24,10 @@ void RenderingViewer::initializeGL() {
   fuc_->glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
   fuc_->glEnable(GL_DEPTH_TEST);
 
-  tetrahedron_->init();
+  objects_->init();
 
-  for (size_t i=0 ; i < pointlights_.size() ; i++) {
-    pointlights_[i]->init();
+  for (const auto pointlight : pointlights_) {
+    pointlight->init();
   }
 }
 
@@ -35,15 +38,15 @@ void RenderingViewer::paintGL() {
   view_matrix.perspective(45.0f, aspect_ratio_, 0.1f, 100.0f);
   view_matrix.lookAt(camera_pos_, observe_center_, QVector3D(0.0f, 0.0f, 1.0f));
 
-  QMatrix4x4 tetrahedron_model_matrix;
-  tetrahedron_model_matrix.scale(0.1);
-  tetrahedron_->paint(view_matrix, tetrahedron_model_matrix);
+  QMatrix4x4 object_model_matrix;
+  // object_model_matrix.scale(0.1);
+  objects_->paint(view_matrix, object_model_matrix);
 
   for (size_t i=0 ; i < pointlights_.size() ; i++) {
     QMatrix4x4 pointlight_model_matrix;
-    pointlight_model_matrix.translate(tetrahedron_->getLightPosition(i));
-    pointlight_model_matrix.scale(0.1f);
-    pointlights_[i]->paint(view_matrix * pointlight_model_matrix);
+    pointlight_model_matrix.translate(objects_->getLightPosition(i));
+    pointlight_model_matrix.scale(0.005f);
+    pointlights_[i]->paint(view_matrix, pointlight_model_matrix);
   }
 
   // request for drawing update
@@ -57,7 +60,7 @@ void RenderingViewer::resizeGL(int width, int height) {
 void RenderingViewer::onChooseTextureImage() {
   QString file_path = QFileDialog::getOpenFileName(this, "Please choose an image file");
   if (file_path != NULL) {
-    tetrahedron_->setTexture(QImage(file_path));
+    objects_->setTextureImage(QImage(file_path));
   }
 }
 

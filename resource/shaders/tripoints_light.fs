@@ -19,7 +19,7 @@ uniform vec3      lightPosition2;
 uniform vec3      lightIntensity2;
 
 void main() {
-  vec3 ambient = lightAmbient * lightColor1;
+  vec3 ambient = lightAmbient;
 
   vec3 normalizeNormal = normalize(normalVector);
 

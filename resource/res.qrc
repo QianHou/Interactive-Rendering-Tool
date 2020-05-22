@@ -1,11 +1,14 @@
 <RCC>
   <qresource>
-    <file>shaders/tripoints.vs</file>
+    <file>shaders/purity.fs</file>
     <file>shaders/tripoints.fs</file>
-    <file>shaders/tripoints_light.vs</file>
     <file>shaders/tripoints_light.fs</file>
-    <file>shaders/pointlight.fs</file>
+
+    <file>shaders/tripoints.vs</file>
+    <file>shaders/tripoints_light.vs</file>
+
     <file>images/default.jpeg</file>
+
     <file>objects/tree.obj</file>
     <file>objects/penguin.obj</file>
     <file>objects/ball.obj</file>
