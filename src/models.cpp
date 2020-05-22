@@ -10,6 +10,13 @@ PurityModel::PurityModel():
   vertex_obj_(new QOpenGLBuffer()),
   array_obj_(new QOpenGLVertexArrayObject()) {}
 
+PurityModel::PurityModel(QString obj_file_path):
+  ObjectLoader(obj_file_path),
+  fuc_(new QOpenGLFunctions()),
+  shader_(new QOpenGLShaderProgram()),
+  vertex_obj_(new QOpenGLBuffer()),
+  array_obj_(new QOpenGLVertexArrayObject()) {}
+
 PurityModel::~PurityModel() {
   delete fuc_;
   delete shader_;
@@ -48,6 +55,23 @@ void PurityModel::paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_m
   shader_->release();
 
   array_obj_->release();
+}
+
+/*********************************************点光源模型*********************************************/
+PointLightModel::PointLightModel():
+  PurityModel(":/objects/ball.obj"),
+  light_position_(QVector3D(0.5, 0.5, 0.5)),
+  light_color_(QVector3D(1.0, 1.0, 1.0)),
+  light_intensity_(0.5) {}
+
+double PointLightModel::light_ambient_ = 0;
+
+void PointLightModel::setLightAmbient(double ambient) {
+  light_ambient_ = ambient;
+}
+
+double PointLightModel::getLightAmbient() {
+  return light_ambient_;
 }
 
 /*********************************************纹理映射模型*********************************************/
@@ -90,11 +114,7 @@ void TextureModel::setTextureImage(QImage image) {
 
 /*********************************************光照纹理映射模型*********************************************/
 LightTextureModel::LightTextureModel() :
-  normal_vertex_obj_(new QOpenGLBuffer()),
-  light_ambient_(QVector3D(0, 0, 0)),
-  light_position_({QVector3D(0.5, 0.5, 0.5), QVector3D(-0.5, -0.5, -0.5)}),
-  light_color_({QVector3D(1.0, 1.0, 1.0), QVector3D(1.0, 1.0, 1.0)}),
-  light_intensity_({QVector3D(0.5, 0.5, 0.5), QVector3D(0.5, 0.5, 0.5)}) {}
+  normal_vertex_obj_(new QOpenGLBuffer()) {}
 
 LightTextureModel::~LightTextureModel() {
   delete normal_vertex_obj_;
@@ -115,7 +135,7 @@ void LightTextureModel::init() {
   array_obj_->release();
 }
 
-void LightTextureModel::paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix) {
+void LightTextureModel::paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix, const std::array<PointLightModel*, 2>& pointlights) {
   array_obj_->bind();
 
   texture_->bind();
@@ -125,15 +145,23 @@ void LightTextureModel::paint(const QMatrix4x4& view_matrix, const QMatrix4x4& m
   shader_->setUniformValue(shader_->uniformLocation("viewMatrix"), view_matrix);
   shader_->setUniformValue(shader_->uniformLocation("modelMatrix"), model_matrix);
 
-  shader_->setUniformValue(shader_->uniformLocation("lightAmbient"), light_ambient_);
+  double ambient = PointLightModel::getLightAmbient();
+  QVector3D ambient_vector = QVector3D(ambient, ambient, ambient);
+  shader_->setUniformValue(shader_->uniformLocation("lightAmbient"), ambient_vector);
 
-  shader_->setUniformValue(shader_->uniformLocation("lightPosition1"), light_position_[0]);
-  shader_->setUniformValue(shader_->uniformLocation("lightColor1"), light_color_[0]);
-  shader_->setUniformValue(shader_->uniformLocation("lightIntensity1"), light_intensity_[0]);
+  shader_->setUniformValue(shader_->uniformLocation("lightPosition1"), pointlights[0]->getLightPosition());
+  shader_->setUniformValue(shader_->uniformLocation("lightColor1"), pointlights[0]->getLightColor());
 
-  shader_->setUniformValue(shader_->uniformLocation("lightPosition2"), light_position_[1]);
-  shader_->setUniformValue(shader_->uniformLocation("lightColor2"), light_color_[1]);
-  shader_->setUniformValue(shader_->uniformLocation("lightIntensity2"), light_intensity_[1]);
+  double intensity1 = pointlights[0]->getLightIntensity();
+  QVector3D intensity1_vector = QVector3D(intensity1, intensity1, intensity1);
+  shader_->setUniformValue(shader_->uniformLocation("lightIntensity1"), intensity1_vector);
+
+  shader_->setUniformValue(shader_->uniformLocation("lightPosition2"), pointlights[1]->getLightPosition());
+  shader_->setUniformValue(shader_->uniformLocation("lightColor2"), pointlights[1]->getLightColor());
+
+  double intensity2 = pointlights[1]->getLightIntensity();
+  QVector3D intensity2_vector = QVector3D(intensity2, intensity2, intensity2);
+  shader_->setUniformValue(shader_->uniformLocation("lightIntensity2"), intensity2_vector);
 
   shader_->release();
 

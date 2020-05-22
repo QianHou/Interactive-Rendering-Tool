@@ -19,8 +19,6 @@ uniform vec3      lightPosition2;
 uniform vec3      lightIntensity2;
 
 void main() {
-  vec3 ambient = lightAmbient;
-
   vec3 normalizeNormal = normalize(normalVector);
 
   vec3 lightDirection1  = normalize(lightPosition1 - fragPosition);
@@ -31,6 +29,6 @@ void main() {
   float diff2 = max(dot(normalizeNormal, lightDirection2), 0.0);
   vec3 projColor2 = diff2 * lightColor2 * lightIntensity2;
 
-  vec4 light_result = vec4(ambient + projColor1 + projColor2, 1.0f);
+  vec4 light_result = vec4(lightAmbient + projColor1 + projColor2, 1.0f);
   fragColor = light_result * texture(textureImage, textureIndex);
 }

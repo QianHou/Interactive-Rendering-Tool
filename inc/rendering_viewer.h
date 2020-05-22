@@ -5,7 +5,6 @@
 #include <QWidget>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
-#include <QOpenGLVertexArrayObject>
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include "inc/models.h"
@@ -24,18 +23,18 @@ class RenderingViewer : public QOpenGLWidget {
 
   void setLightPosition(double x, double y, double z, int light_index) {
     if (light_index<0 || light_index>1) return;
-    objects_->setLightPosition(QVector3D(x, y, z), light_index);
+    pointlights_[light_index]->setLightPosition(QVector3D(x, y, z));
   }
   void setLightColor(double r, double g, double b, int light_index) {
     if (light_index<0 || light_index>1) return;
-    objects_->setLightColor(QVector3D(r, g, b), light_index);
+    pointlights_[light_index]->setLightColor(QVector3D(r, g, b));
   }
   void setLightIntensity(double intensity, int light_index) {
     if (light_index<0 || light_index>1) return;
-    objects_->setLightItensity(intensity, light_index);
+    pointlights_[light_index]->setLightItensity(intensity);
   }
   void setLightAmbient(double ambient) {
-    objects_->setLightAmbient(ambient);
+    PointLightModel::setLightAmbient(ambient);
   }
 
  protected:
@@ -64,7 +63,7 @@ class RenderingViewer : public QOpenGLWidget {
   QVector3D observe_center_;
 
   LightTextureModel* objects_;
-  std::array<PurityModel*, 2> pointlights_;
+  std::array<PointLightModel*, 2> pointlights_;
 
   double aspect_ratio_ = 0;
 

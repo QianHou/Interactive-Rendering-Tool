@@ -9,10 +9,10 @@ RenderingViewer::RenderingViewer(QWidget *parent) :
   QOpenGLWidget(parent),
   fuc_(new QOpenGLFunctions()),
   objects_(new LightTextureModel()),
-  pointlights_({new PurityModel(), new PurityModel()}) {
-  for (const auto pointlight : pointlights_) {
-    pointlight->reloadObject(QString(":/objects/ball.obj"));
-  }
+  pointlights_({new PointLightModel(), new PointLightModel()}) {
+  PointLightModel::setLightAmbient(0);
+  pointlights_[0]->setLightPosition(QVector3D(0.5, 0.5, 0.5));
+  pointlights_[1]->setLightPosition(QVector3D(-0.5, -0.5, -0.5));
 }
 
 RenderingViewer::~RenderingViewer() {
@@ -40,13 +40,13 @@ void RenderingViewer::paintGL() {
 
   QMatrix4x4 object_model_matrix;
   // object_model_matrix.scale(0.1);
-  objects_->paint(view_matrix, object_model_matrix);
+  objects_->paint(view_matrix, object_model_matrix, pointlights_);
 
-  for (size_t i=0 ; i < pointlights_.size() ; i++) {
-    QMatrix4x4 pointlight_model_matrix;
-    pointlight_model_matrix.translate(objects_->getLightPosition(i));
-    pointlight_model_matrix.scale(0.005f);
-    pointlights_[i]->paint(view_matrix, pointlight_model_matrix);
+  for (const auto& pointlight : pointlights_) {
+    QMatrix4x4 model_matrix;
+    model_matrix.translate(pointlight->getLightPosition());
+    model_matrix.scale(0.005f);
+    pointlight->paint(view_matrix, model_matrix);
   }
 
   // request for drawing update

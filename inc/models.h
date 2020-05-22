@@ -17,6 +17,7 @@
 class PurityModel : public ObjectLoader {
  public:
   PurityModel();
+  explicit PurityModel(QString obj_file_path);
   ~PurityModel();
 
   void init();
@@ -32,6 +33,28 @@ class PurityModel : public ObjectLoader {
 
   QOpenGLBuffer* vertex_obj_;
   QOpenGLVertexArrayObject* array_obj_;
+};
+
+class PointLightModel : public PurityModel {
+ public:
+  PointLightModel();
+
+  void setLightPosition(const QVector3D& position) { light_position_ = position; }
+  void setLightColor(const QVector3D& color) { light_color_ = color; }
+  void setLightItensity(double itensity) { light_intensity_ = itensity; }
+  static void setLightAmbient(double ambient);
+
+  QVector3D getLightPosition() const { return light_position_; }
+  QVector3D getLightColor() const { return light_color_; }
+  double getLightIntensity() const { return light_intensity_; }
+  static double getLightAmbient();
+
+ private:
+  QVector3D light_position_;
+  QVector3D  light_color_;
+
+  double  light_intensity_;
+  static double light_ambient_;
 };
 
 class TextureModel : public PurityModel {
@@ -59,36 +82,7 @@ class LightTextureModel : public TextureModel {
   ~LightTextureModel();
 
   void init();
-  void paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix);
-
-  void setLightPosition(const QVector3D& position, int light_index) {
-    if (light_index<0 || light_index>1) return;
-    light_position_[light_index] = position;
-  }
-  void setLightColor(const QVector3D& color, int light_index) {
-    if (light_index<0 || light_index>1) return;
-    light_color_[light_index] = color;
-  }
-  void setLightItensity(double itensity, int light_index) {
-    if (light_index<0 || light_index>1) return;
-    light_intensity_[light_index] = QVector3D(itensity, itensity, itensity);
-  }
-  void setLightAmbient(double ambient) {
-    light_ambient_ = QVector3D(ambient, ambient, ambient);
-  }
-
-  QVector3D getLightPosition(int light_index) {
-    if (light_index<0 || light_index>1) return QVector3D(0, 0, 0);
-    return light_position_[light_index];
-  }
-  QVector3D getLightColor(int light_index) {
-    if (light_index<0 || light_index>1) return QVector3D(0, 0, 0);
-    return light_color_[light_index];
-  }
-  double getLightIntensity(int light_index) {
-    if (light_index<0 || light_index>1) return 0;
-    return light_intensity_[light_index].x();
-  }
+  void paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix, const std::array<PointLightModel*, 2>& pointlights);
 
  protected:
   virtual QString getVertexShaderPath()   { return ":shaders/tripoints_light.vs"; }
@@ -96,12 +90,8 @@ class LightTextureModel : public TextureModel {
 
  private:
   QOpenGLBuffer* normal_vertex_obj_;
-
-  std::array<QVector3D, 2> light_position_;
-  std::array<QVector3D, 2>  light_color_;
-  std::array<QVector3D, 2>  light_intensity_;
-
-  QVector3D light_ambient_;
 };
+
+
 
 #endif  // INC_MODELS_H_

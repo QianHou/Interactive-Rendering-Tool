@@ -233,7 +233,7 @@ void ObjectLoader::bufferClear() {
 
 void ObjectLoader::calcNormalVector(const std::vector<GLfloat>& vertex_data) {
   if (!vertex_data.empty()) {
-    std::cout << "[INFO] calcuate normal vevtor by vertex" << std::endl;
+    std::cout << "[INFO] calcuate normal vector by vertex" << std::endl;
 
     normal_vector_.size = vertex_data.size();
 
