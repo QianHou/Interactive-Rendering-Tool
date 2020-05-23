@@ -12,5 +12,6 @@
     <file>objects/tree.obj</file>
     <file>objects/penguin.obj</file>
     <file>objects/ball.obj</file>
+    <file>objects/cat.obj</file>
   </qresource>
 </RCC>

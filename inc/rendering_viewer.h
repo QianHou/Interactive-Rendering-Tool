@@ -62,7 +62,7 @@ class RenderingViewer : public QOpenGLWidget {
   QVector3D camera_pos_;
   QVector3D observe_center_;
 
-  LightTextureModel* objects_;
+  std::array<LightTextureModel*, 1> objects_;
   std::array<PointLightModel*, 2> pointlights_;
 
   double aspect_ratio_ = 0;

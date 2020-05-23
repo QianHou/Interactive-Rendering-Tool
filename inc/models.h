@@ -60,6 +60,7 @@ class PointLightModel : public PurityModel {
 class TextureModel : public PurityModel {
  public:
   TextureModel();
+  explicit TextureModel(QString obj_file_path);
   ~TextureModel();
 
   void init();
@@ -79,6 +80,7 @@ class TextureModel : public PurityModel {
 class LightTextureModel : public TextureModel {
  public:
   LightTextureModel();
+  explicit LightTextureModel(QString obj_file_path);
   ~LightTextureModel();
 
   void init();

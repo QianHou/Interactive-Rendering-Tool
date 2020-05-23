@@ -183,9 +183,9 @@ void ObjectLoader::reloadObject(const QString & obj_file_path) {
   if (!textures.empty()) {
     for (const auto indexes : surface_points_index) {
       for (const auto index : indexes) {
-        vertex_data.push_back(points[index][0]);
-        vertex_data.push_back(points[index][1]);
-        vertex_data.push_back(points[index][2]);
+        vertex_data.push_back(points[index-1][0]);
+        vertex_data.push_back(points[index-1][1]);
+        vertex_data.push_back(points[index-1][2]);
       }
     }
   } else {
@@ -195,8 +195,9 @@ void ObjectLoader::reloadObject(const QString & obj_file_path) {
   if (!textures.empty()) {
     for (const auto indexes : surface_textures_index) {
       for (const auto index : indexes) {
-        texture_index_data.push_back(textures[index][0]);
-        texture_index_data.push_back(textures[index][1]);
+        // covert image coordinate to texture index coordinate
+        texture_index_data.push_back(textures[index-1][0]);
+        texture_index_data.push_back(1-textures[index-1][1]);
       }
     }
   } else {
@@ -206,9 +207,9 @@ void ObjectLoader::reloadObject(const QString & obj_file_path) {
   if (!normal_vecs.empty()) {
     for (const auto indexes : surface_normals_index) {
       for (const auto index : indexes) {
-        normal_vector_data.push_back(normal_vecs[index][0]);
-        normal_vector_data.push_back(normal_vecs[index][1]);
-        normal_vector_data.push_back(normal_vecs[index][2]);
+        normal_vector_data.push_back(normal_vecs[index-1][0]);
+        normal_vector_data.push_back(normal_vecs[index-1][1]);
+        normal_vector_data.push_back(normal_vecs[index-1][2]);
       }
     }
   } else {

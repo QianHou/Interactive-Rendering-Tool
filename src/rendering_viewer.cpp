@@ -8,7 +8,7 @@ RenderingViewer::RenderingViewer(QWidget *parent) :
   observe_center_(0.0f, 0.0f, 0.0f),
   QOpenGLWidget(parent),
   fuc_(new QOpenGLFunctions()),
-  objects_(new LightTextureModel()),
+  objects_({new LightTextureModel(":/objects/cat.obj")}),
   pointlights_({new PointLightModel(), new PointLightModel()}) {
   PointLightModel::setLightAmbient(0);
   pointlights_[0]->setLightPosition(QVector3D(0.5, 0.5, 0.5));
@@ -24,11 +24,14 @@ void RenderingViewer::initializeGL() {
   fuc_->glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
   fuc_->glEnable(GL_DEPTH_TEST);
 
-  objects_->init();
-
   for (const auto pointlight : pointlights_) {
     pointlight->init();
   }
+
+  for (const auto object : objects_) {
+    object->init();
+  }
+
 }
 
 void RenderingViewer::paintGL() {
@@ -38,16 +41,16 @@ void RenderingViewer::paintGL() {
   view_matrix.perspective(45.0f, aspect_ratio_, 0.1f, 100.0f);
   view_matrix.lookAt(camera_pos_, observe_center_, QVector3D(0.0f, 0.0f, 1.0f));
 
-  QMatrix4x4 object_model_matrix;
-  // object_model_matrix.scale(0.1);
-  objects_->paint(view_matrix, object_model_matrix, pointlights_);
-
   for (const auto& pointlight : pointlights_) {
     QMatrix4x4 model_matrix;
     model_matrix.translate(pointlight->getLightPosition());
     model_matrix.scale(0.005f);
     pointlight->paint(view_matrix, model_matrix);
   }
+
+  QMatrix4x4 object_model_matrix;
+  object_model_matrix.scale(0.1);
+  objects_[0]->paint(view_matrix, object_model_matrix, pointlights_);
 
   // request for drawing update
   this->update();
@@ -60,7 +63,7 @@ void RenderingViewer::resizeGL(int width, int height) {
 void RenderingViewer::onChooseTextureImage() {
   QString file_path = QFileDialog::getOpenFileName(this, "Please choose an image file");
   if (file_path != NULL) {
-    objects_->setTextureImage(QImage(file_path));
+    objects_[0]->setTextureImage(QImage(file_path));
   }
 }
 

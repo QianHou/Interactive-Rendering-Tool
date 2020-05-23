@@ -36,12 +36,16 @@ void PurityModel::init() {
   array_obj_->create();
   array_obj_->bind();
 
-  vertex_obj_->create();
-  vertex_obj_->bind();
-  vertex_obj_->allocate(this->vertex_.buffer, this->vertex_.size * sizeof(GLfloat));
-  fuc_->glEnableVertexAttribArray(SHADER_VERTEX_OFFSET);
-  fuc_->glVertexAttribPointer(SHADER_VERTEX_OFFSET, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), 0);
-  vertex_obj_->release();
+  if (this->vertex_.buffer) {
+    vertex_obj_->create();
+    vertex_obj_->bind();
+    vertex_obj_->allocate(this->vertex_.buffer, this->vertex_.size * sizeof(GLfloat));
+    fuc_->glEnableVertexAttribArray(SHADER_VERTEX_OFFSET);
+    fuc_->glVertexAttribPointer(SHADER_VERTEX_OFFSET, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), 0);
+    vertex_obj_->release();
+  } else {
+    std::cout << "[ERROR] vertex buffer not create" << std::endl;
+  }
 
   array_obj_->release();
 }
@@ -78,6 +82,10 @@ double PointLightModel::getLightAmbient() {
 TextureModel::TextureModel() :
   texture_index_obj_(new QOpenGLBuffer()) {}
 
+TextureModel::TextureModel(QString obj_file_path):
+  PurityModel(obj_file_path),
+  texture_index_obj_(new QOpenGLBuffer()) {}
+
 TextureModel::~TextureModel() {
   if (texture_) delete texture_;
   delete texture_index_obj_;
@@ -89,12 +97,16 @@ void TextureModel::init() {
 
   array_obj_->bind();
 
-  texture_index_obj_->create();
-  texture_index_obj_->bind();
-  texture_index_obj_->allocate(this->texture_index_.buffer, this->texture_index_.size * sizeof(GLfloat));
-  fuc_->glEnableVertexAttribArray(SHADER_TEXTURE_INDEX_OFFSET);
-  fuc_->glVertexAttribPointer(SHADER_TEXTURE_INDEX_OFFSET, 2, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), 0);
-  texture_index_obj_->release();
+  if (this->texture_index_.buffer) {
+    texture_index_obj_->create();
+    texture_index_obj_->bind();
+    texture_index_obj_->allocate(this->texture_index_.buffer, this->texture_index_.size * sizeof(GLfloat));
+    fuc_->glEnableVertexAttribArray(SHADER_TEXTURE_INDEX_OFFSET);
+    fuc_->glVertexAttribPointer(SHADER_TEXTURE_INDEX_OFFSET, 2, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), 0);
+    texture_index_obj_->release();
+  } else {
+    std::cout << "[ERROR] texture index buffer not create" << std::endl;
+  }
 
   array_obj_->release();
 }
@@ -116,6 +128,10 @@ void TextureModel::setTextureImage(QImage image) {
 LightTextureModel::LightTextureModel() :
   normal_vertex_obj_(new QOpenGLBuffer()) {}
 
+LightTextureModel::LightTextureModel(QString obj_file_path) :
+  TextureModel(obj_file_path),
+  normal_vertex_obj_(new QOpenGLBuffer()) {}
+
 LightTextureModel::~LightTextureModel() {
   delete normal_vertex_obj_;
 }
@@ -125,12 +141,16 @@ void LightTextureModel::init() {
 
   array_obj_->bind();
 
-  normal_vertex_obj_->create();
-  normal_vertex_obj_->bind();
-  normal_vertex_obj_->allocate(this->normal_vector_.buffer, this->normal_vector_.size * sizeof(GLfloat));
-  fuc_->glEnableVertexAttribArray(SHADER_LIGHT_OFFSET);
-  fuc_->glVertexAttribPointer(SHADER_LIGHT_OFFSET, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), 0);
-  normal_vertex_obj_->release();
+  if (this->normal_vector_.buffer) {
+    normal_vertex_obj_->create();
+    normal_vertex_obj_->bind();
+    normal_vertex_obj_->allocate(this->normal_vector_.buffer, this->normal_vector_.size * sizeof(GLfloat));
+    fuc_->glEnableVertexAttribArray(SHADER_LIGHT_OFFSET);
+    fuc_->glVertexAttribPointer(SHADER_LIGHT_OFFSET, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), 0);
+    normal_vertex_obj_->release();
+  } else {
+    std::cout << "[ERROR] normal vector buffer not create" << std::endl;
+  }
 
   array_obj_->release();
 }
