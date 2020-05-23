@@ -13,7 +13,7 @@ InteractiveRenderingTool::InteractiveRenderingTool(QWidget *parent) :
   viewer_->setObjectName(QStringLiteral("RenderingViewer"));
   viewer_->setGeometry(QRect(0, 0, ui_->viewer_divide->x(), this->geometry().height()));
 
-  connect(ui_->texture_choose_button, SIGNAL(clicked()), viewer_, SLOT(onChooseTextureImage()), Qt::DirectConnection);
+  connect(ui_->object1_texture_button, SIGNAL(clicked()), viewer_, SLOT(onChooseTextureImage()), Qt::DirectConnection);
   connect(ui_->campos_reset_button, SIGNAL(clicked()), viewer_, SLOT(onResetCameraPosition()), Qt::DirectConnection);
   connect(ui_->light_ambient_slider, SIGNAL(valueChanged(int)), this , SLOT(onLightAmbientChange(int)));
 
