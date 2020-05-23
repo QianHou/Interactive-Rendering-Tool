@@ -4,17 +4,29 @@
 #include <iostream>
 
 RenderingViewer::RenderingViewer(QWidget *parent) :
-  camera_pos_(0.0f, 10.0f, 0.0f),
   observe_center_(0.0f, 0.0f, 0.0f),
+  camera_pos_(GlobalParams::CAMERA_POSITION_INIT),
   QOpenGLWidget(parent),
   fuc_(new QOpenGLFunctions()),
-  objects_({new LightTextureModel(":/objects/garfield.obj"),
-            new LightTextureModel(":/objects/dog.obj"),
-            new LightTextureModel(":/objects/umbrella.obj")}),
+  objects_({new LightTextureModel(GlobalParams::OBJECT1_OBJ_PATH_INIT),
+            new LightTextureModel(GlobalParams::OBJECT2_OBJ_PATH_INIT),
+            new LightTextureModel(GlobalParams::OBJECT3_OBJ_PATH_INIT)}),
   pointlights_({new PointLightModel(), new PointLightModel()}) {
-  PointLightModel::setLightAmbient(0);
-  pointlights_[0]->setLightPosition(QVector3D(1.5, 1.5, 1.5));
-  pointlights_[1]->setLightPosition(QVector3D(-1.5, -1.5, 1.5));
+  objects_pose_[0].position = GlobalParams::OBJECT1_POSITION_INIT;
+  objects_pose_[0].rotate = GlobalParams::OBJECT1_ROTATE_INIT;
+  objects_pose_[0].scale = GlobalParams::OBJECT1_SCALE_INIT;
+
+  objects_pose_[1].position = GlobalParams::OBJECT2_POSITION_INIT;
+  objects_pose_[1].rotate = GlobalParams::OBJECT2_ROTATE_INIT;
+  objects_pose_[1].scale = GlobalParams::OBJECT2_SCALE_INIT;
+
+  objects_pose_[2].position = GlobalParams::OBJECT3_POSITION_INIT;
+  objects_pose_[2].rotate = GlobalParams::OBJECT3_ROTATE_INIT;
+  objects_pose_[2].scale = GlobalParams::OBJECT3_SCALE_INIT;
+
+  PointLightModel::setLightAmbient(GlobalParams::AMBIENT_LIGHT_INIT);
+  pointlights_[0]->setLightPosition(QVector3D(GlobalParams::POINTLIGHT1_POSITION_INIT));
+  pointlights_[1]->setLightPosition(QVector3D(GlobalParams::POINTLIGHT2_POSITION_INIT));
 }
 
 RenderingViewer::~RenderingViewer() {
@@ -34,9 +46,9 @@ void RenderingViewer::initializeGL() {
     object->init();
   }
 
-  objects_[0]->setTextureImage(QImage(":/images/garfield.jpg"));
-  objects_[1]->setTextureImage(QImage(":/images/dog.jpg"));
-  objects_[2]->setTextureImage(QImage(":/images/umbrella.jpg"));
+  objects_[0]->setTextureImage(QImage(GlobalParams::OBJECT1_TEXTURE_INIT));
+  objects_[1]->setTextureImage(QImage(GlobalParams::OBJECT2_TEXTURE_INIT));
+  objects_[2]->setTextureImage(QImage(GlobalParams::OBJECT3_TEXTURE_INIT));
 }
 
 void RenderingViewer::paintGL() {
@@ -53,19 +65,14 @@ void RenderingViewer::paintGL() {
     pointlight->paint(view_matrix, model_matrix);
   }
 
-  std::vector<QMatrix4x4> object_model_matrix(objects_.size());
-  object_model_matrix[0].scale(0.1);
-  object_model_matrix[0].translate(0, 8, 0);
-  // object_model_matrix[0].rotate(35, QVector3D(0, 0, 1));
-
-  object_model_matrix[1].scale(0.02);
-  object_model_matrix[1].translate(0, -20, 0);
-  // object_model_matrix[1].rotate(90, QVector3D(0, 0, 1));
-
-  object_model_matrix[2].scale(0.02);
-
   for (size_t i=0; i < objects_.size(); i++) {
-    objects_[i]->paint(view_matrix, object_model_matrix[i], pointlights_);
+    QMatrix4x4 model_matrix;
+    model_matrix.scale(objects_pose_[i].scale);
+    model_matrix.translate(objects_pose_[i].position);
+    model_matrix.rotate(objects_pose_[i].rotate.x(), QVector3D(1, 0, 0));
+    model_matrix.rotate(objects_pose_[i].rotate.y(), QVector3D(0, 1, 0));
+    model_matrix.rotate(objects_pose_[i].rotate.z(), QVector3D(0, 0, 1));
+    objects_[i]->paint(view_matrix, model_matrix, pointlights_);
   }
 
   // request for drawing update
@@ -144,6 +151,6 @@ void RenderingViewer::wheelEvent(QWheelEvent*event) {
 }
 
 void RenderingViewer::onResetCameraPosition() {
-  camera_pos_ = QVector3D(0.0f, 10.0f, 0.0f);
+  camera_pos_ = QVector3D(GlobalParams::CAMERA_POSITION_INIT);
   emit signalCameraPositionChange();
 }

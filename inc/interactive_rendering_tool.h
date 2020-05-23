@@ -17,7 +17,7 @@ class InteractiveRenderingTool : public QWidget {
   explicit InteractiveRenderingTool(QWidget *parent = nullptr);
   ~InteractiveRenderingTool();
 
- public slots:
+ private slots:
   void onCameraPositionChange();
   void onLightAmbientChange(int value);
   void onLightPositionChange(double value);

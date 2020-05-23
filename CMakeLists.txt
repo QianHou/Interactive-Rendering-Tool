@@ -35,6 +35,7 @@ qt5_wrap_cpp(MOC_LIBS
   inc/rendering_viewer.h
   inc/models.h
   inc/object_loader.h
+  inc/parameters.h
 )
 qt5_add_resources(QRC_LIBS
   resource/res.qrc

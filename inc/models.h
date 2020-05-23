@@ -86,6 +86,7 @@ class LightTextureModel : public TextureModel {
   ~LightTextureModel();
 
   void init();
+  void paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix);
   void paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix, const std::array<PointLightModel*, 2>& pointlights);
 
  protected:

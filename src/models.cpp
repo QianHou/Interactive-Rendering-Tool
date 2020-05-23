@@ -55,14 +55,15 @@ void PurityModel::paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_m
 
   shader_->bind();
   fuc_->glDrawArrays(GL_TRIANGLES, 0, this->vertex_.size/3);
-  shader_->setUniformValue(shader_->uniformLocation("viewMatrix"), view_matrix*model_matrix);
+  shader_->setUniformValue(shader_->uniformLocation("viewMatrix"), view_matrix);
+  shader_->setUniformValue(shader_->uniformLocation("modelMatrix"), model_matrix);
   shader_->release();
 
   array_obj_->release();
 }
 
 /*********************************************点光源模型*********************************************/
-PointLightModel::PointLightModel():
+PointLightModel::PointLightModel() :
   PurityModel(":/objects/ball.obj"),
   light_position_(QVector3D(0.5, 0.5, 0.5)),
   light_color_(QVector3D(1.0, 1.0, 1.0)),
@@ -113,10 +114,15 @@ void TextureModel::init() {
 }
 
 void TextureModel::paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix) {
-  PurityModel::paint(view_matrix, model_matrix);
-
   array_obj_->bind();
+
   texture_->bind();
+  shader_->bind();
+  fuc_->glDrawArrays(GL_TRIANGLES, 0, this->vertex_.size/3);
+  shader_->setUniformValue(shader_->uniformLocation("viewMatrix"), view_matrix);
+  shader_->setUniformValue(shader_->uniformLocation("modelMatrix"), model_matrix);
+  shader_->release();
+
   array_obj_->release();
 }
 
@@ -154,6 +160,11 @@ void LightTextureModel::init() {
   }
 
   array_obj_->release();
+}
+
+void LightTextureModel::paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix) {
+  std::cout << "[WARN] no point light in LightTextureModel" << std::endl;
+  TextureModel::paint(view_matrix, model_matrix);
 }
 
 void LightTextureModel::paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix, const std::array<PointLightModel*, 2>& pointlights) {
