@@ -14,6 +14,6 @@ uniform mat4 viewMatrix;
 void main() {
   gl_Position = viewMatrix * modelMatrix * vec4(posVertex, 1.0f);
   fragPosition = vec3(modelMatrix * vec4(posVertex, 1.0));
-  normalVector = normalVectorVertex;
+  normalVector = mat3(modelMatrix) * normalVectorVertex;
   textureIndex = textureIndexVertex;
 }

@@ -8,10 +8,19 @@
     <file>shaders/tripoints_light.vs</file>
 
     <file>images/default.jpeg</file>
+    <file>images/cat.jpg</file>
+    <file>images/dog.jpg</file>
+    <file>images/penguin.jpg</file>
+    <file>images/garfield.jpg</file>
+    <file>images/umbrella.jpg</file>
 
     <file>objects/tree.obj</file>
     <file>objects/penguin.obj</file>
     <file>objects/ball.obj</file>
     <file>objects/cat.obj</file>
+    <file>objects/dog.obj</file>
+    <file>objects/garfield.obj</file>
+    <file>objects/umbrella.obj</file>
+
   </qresource>
 </RCC>

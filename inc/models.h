@@ -75,6 +75,8 @@ class TextureModel : public PurityModel {
  protected:
   QOpenGLBuffer* texture_index_obj_;
   QOpenGLTexture* texture_ = NULL;
+
+  QImage texture_image_;
 };
 
 class LightTextureModel : public TextureModel {

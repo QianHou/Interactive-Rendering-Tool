@@ -93,6 +93,7 @@ TextureModel::~TextureModel() {
 
 void TextureModel::init() {
   PurityModel::init();
+
   texture_ = new QOpenGLTexture(QImage(":images/default.jpeg"));
 
   array_obj_->bind();

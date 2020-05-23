@@ -4,15 +4,17 @@
 #include <iostream>
 
 RenderingViewer::RenderingViewer(QWidget *parent) :
-  camera_pos_(0.0f, 3.0f, 0.0f),
+  camera_pos_(0.0f, 10.0f, 0.0f),
   observe_center_(0.0f, 0.0f, 0.0f),
   QOpenGLWidget(parent),
   fuc_(new QOpenGLFunctions()),
-  objects_({new LightTextureModel(":/objects/cat.obj")}),
+  objects_({new LightTextureModel(":/objects/garfield.obj"),
+            new LightTextureModel(":/objects/dog.obj"),
+            new LightTextureModel(":/objects/umbrella.obj")}),
   pointlights_({new PointLightModel(), new PointLightModel()}) {
   PointLightModel::setLightAmbient(0);
-  pointlights_[0]->setLightPosition(QVector3D(0.5, 0.5, 0.5));
-  pointlights_[1]->setLightPosition(QVector3D(-0.5, -0.5, -0.5));
+  pointlights_[0]->setLightPosition(QVector3D(1.5, 1.5, 1.5));
+  pointlights_[1]->setLightPosition(QVector3D(-1.5, -1.5, 1.5));
 }
 
 RenderingViewer::~RenderingViewer() {
@@ -32,6 +34,9 @@ void RenderingViewer::initializeGL() {
     object->init();
   }
 
+  objects_[0]->setTextureImage(QImage(":/images/garfield.jpg"));
+  objects_[1]->setTextureImage(QImage(":/images/dog.jpg"));
+  objects_[2]->setTextureImage(QImage(":/images/umbrella.jpg"));
 }
 
 void RenderingViewer::paintGL() {
@@ -48,9 +53,20 @@ void RenderingViewer::paintGL() {
     pointlight->paint(view_matrix, model_matrix);
   }
 
-  QMatrix4x4 object_model_matrix;
-  object_model_matrix.scale(0.1);
-  objects_[0]->paint(view_matrix, object_model_matrix, pointlights_);
+  std::vector<QMatrix4x4> object_model_matrix(objects_.size());
+  object_model_matrix[0].scale(0.1);
+  object_model_matrix[0].translate(0, 8, 0);
+  // object_model_matrix[0].rotate(35, QVector3D(0, 0, 1));
+
+  object_model_matrix[1].scale(0.02);
+  object_model_matrix[1].translate(0, -20, 0);
+  // object_model_matrix[1].rotate(90, QVector3D(0, 0, 1));
+
+  object_model_matrix[2].scale(0.02);
+
+  for (size_t i=0; i < objects_.size(); i++) {
+    objects_[i]->paint(view_matrix, object_model_matrix[i], pointlights_);
+  }
 
   // request for drawing update
   this->update();
@@ -128,6 +144,6 @@ void RenderingViewer::wheelEvent(QWheelEvent*event) {
 }
 
 void RenderingViewer::onResetCameraPosition() {
-  camera_pos_ = QVector3D(0.0f, 3.0f, 0.0f);
+  camera_pos_ = QVector3D(0.0f, 10.0f, 0.0f);
   emit signalCameraPositionChange();
 }
