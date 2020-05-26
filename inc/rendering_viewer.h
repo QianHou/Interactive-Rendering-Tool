@@ -51,6 +51,11 @@ class RenderingViewer : public QOpenGLWidget {
     objects_pose_[object_index].scale = scale;
   }
 
+  QString getObjectName(int object_index) const {
+    if (object_index<0 || object_index>GlobalParams::OBJECT_NUMBER-1) return "";
+    return objects_name_[object_index];
+  }
+
  protected:
   void initializeGL() override;
   void paintGL() override;
@@ -58,6 +63,7 @@ class RenderingViewer : public QOpenGLWidget {
 
 
  signals:
+  void signalObjectNameChange();
   void signalCameraPositionChange();
 
  public slots:
@@ -92,6 +98,7 @@ class RenderingViewer : public QOpenGLWidget {
   std::array<PointLightModel*, GlobalParams::POINTLIGHT_NUMBER> pointlights_;
 
   std::array<ObjectPoseType, GlobalParams::OBJECT_NUMBER> objects_pose_;
+  std::array<QString, GlobalParams::OBJECT_NUMBER> objects_name_;
 
   struct {
     struct {

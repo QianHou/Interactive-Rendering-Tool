@@ -15,14 +15,17 @@ RenderingViewer::RenderingViewer(QWidget *parent) :
   objects_pose_[0].position = GlobalParams::OBJECT1_POSITION_INIT;
   objects_pose_[0].rotate = GlobalParams::OBJECT1_ROTATE_INIT;
   objects_pose_[0].scale = GlobalParams::OBJECT1_SCALE_INIT;
+  objects_name_[0] = GlobalParams::OBJECT1_OBJ_PATH_INIT.split('/').last();
 
   objects_pose_[1].position = GlobalParams::OBJECT2_POSITION_INIT;
   objects_pose_[1].rotate = GlobalParams::OBJECT2_ROTATE_INIT;
   objects_pose_[1].scale = GlobalParams::OBJECT2_SCALE_INIT;
+  objects_name_[1] = GlobalParams::OBJECT2_OBJ_PATH_INIT.split('/').last();
 
   objects_pose_[2].position = GlobalParams::OBJECT3_POSITION_INIT;
   objects_pose_[2].rotate = GlobalParams::OBJECT3_ROTATE_INIT;
   objects_pose_[2].scale = GlobalParams::OBJECT3_SCALE_INIT;
+  objects_name_[2] = GlobalParams::OBJECT3_OBJ_PATH_INIT.split('/').last();
 
   PointLightModel::setLightAmbient(GlobalParams::AMBIENT_LIGHT_INIT);
   pointlights_[0]->setLightPosition(QVector3D(GlobalParams::POINTLIGHT1_POSITION_INIT));
@@ -95,6 +98,8 @@ void RenderingViewer::onChooseModelOfObject1() {
   QString file_path = QFileDialog::getOpenFileName(this, "请选择模型文件", ".", "OBJ Files(*.obj)");
   if (file_path != NULL && objects_.size() > 0) {
     objects_[0]->rebind(file_path);
+    objects_name_[0] = file_path.split('/').last();
+    emit signalObjectNameChange();
   }
 }
 
@@ -110,6 +115,8 @@ void RenderingViewer::onChooseModelOfObject2() {
   QString file_path = QFileDialog::getOpenFileName(this, "请选择模型文件", ".", "OBJ Files(*.obj)");
   if (file_path != NULL && objects_.size() > 1) {
     objects_[1]->rebind(file_path);
+    objects_name_[1] = file_path.split('/').last();
+    emit signalObjectNameChange();
   }
 }
 
@@ -125,6 +132,8 @@ void RenderingViewer::onChooseModelOfObject3() {
   QString file_path = QFileDialog::getOpenFileName(this, "请选择模型文件", ".", "OBJ Files(*.obj)");
   if (file_path != NULL && objects_.size() > 2) {
     objects_[2]->rebind(file_path);
+    objects_name_[2] = file_path.split('/').last();
+    emit signalObjectNameChange();
   }
 }
 

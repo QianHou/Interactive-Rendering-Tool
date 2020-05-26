@@ -14,6 +14,8 @@ InteractiveRenderingTool::InteractiveRenderingTool(QWidget *parent) :
   viewer_->setObjectName(QStringLiteral("RenderingViewer"));
   viewer_->setGeometry(QRect(0, 0, ui_->viewer_divide->x(), this->geometry().height()));
 
+  connect(viewer_, SIGNAL(signalObjectNameChange()), this, SLOT(onObjectNameChange()));
+
   connect(ui_->object1_model_button, SIGNAL(clicked()), viewer_, SLOT(onChooseModelOfObject1()), Qt::DirectConnection);
   connect(ui_->object1_texture_button, SIGNAL(clicked()), viewer_, SLOT(onChooseTextureImageOfObject1()), Qt::DirectConnection);
   connect(ui_->object1_x_setbox, SIGNAL(valueChanged(double)), this, SLOT(onObjectPositionChange(double)));
@@ -72,6 +74,7 @@ InteractiveRenderingTool::~InteractiveRenderingTool() {
 }
 
 void InteractiveRenderingTool::uiParamsInit() {
+  ui_->object1_name->setText(GlobalParams::OBJECT1_OBJ_PATH_INIT.split('/').last());
   ui_->object1_x_setbox->setValue(GlobalParams::OBJECT1_POSITION_INIT.x());
   ui_->object1_y_setbox->setValue(GlobalParams::OBJECT1_POSITION_INIT.y());
   ui_->object1_z_setbox->setValue(GlobalParams::OBJECT1_POSITION_INIT.z());
@@ -80,6 +83,7 @@ void InteractiveRenderingTool::uiParamsInit() {
   ui_->object1_yaw_setbox->setValue(GlobalParams::OBJECT1_ROTATE_INIT.z());
   ui_->object1_scale_setbox->setValue(GlobalParams::OBJECT1_SCALE_INIT);
 
+  ui_->object2_name->setText(GlobalParams::OBJECT2_OBJ_PATH_INIT.split('/').last());
   ui_->object2_x_setbox->setValue(GlobalParams::OBJECT2_POSITION_INIT.x());
   ui_->object2_y_setbox->setValue(GlobalParams::OBJECT2_POSITION_INIT.y());
   ui_->object2_z_setbox->setValue(GlobalParams::OBJECT2_POSITION_INIT.z());
@@ -88,6 +92,7 @@ void InteractiveRenderingTool::uiParamsInit() {
   ui_->object2_yaw_setbox->setValue(GlobalParams::OBJECT2_ROTATE_INIT.z());
   ui_->object2_scale_setbox->setValue(GlobalParams::OBJECT2_SCALE_INIT);
 
+  ui_->object3_name->setText(GlobalParams::OBJECT3_OBJ_PATH_INIT.split('/').last());
   ui_->object3_x_setbox->setValue(GlobalParams::OBJECT3_POSITION_INIT.x());
   ui_->object3_y_setbox->setValue(GlobalParams::OBJECT3_POSITION_INIT.y());
   ui_->object3_z_setbox->setValue(GlobalParams::OBJECT3_POSITION_INIT.z());
@@ -117,6 +122,12 @@ void InteractiveRenderingTool::uiParamsInit() {
   ui_->campos_x_label->setText(QString::number(GlobalParams::CAMERA_POSITION_INIT.x(), 'f', 2));
   ui_->campos_y_label->setText(QString::number(GlobalParams::CAMERA_POSITION_INIT.y(), 'f', 2));
   ui_->campos_z_label->setText(QString::number(GlobalParams::CAMERA_POSITION_INIT.z(), 'f', 2));
+}
+
+void InteractiveRenderingTool::onObjectNameChange() {
+  ui_->object1_name->setText(viewer_->getObjectName(0));
+  ui_->object2_name->setText(viewer_->getObjectName(1));
+  ui_->object3_name->setText(viewer_->getObjectName(2));
 }
 
 void InteractiveRenderingTool::onObjectPositionChange(double value) {
