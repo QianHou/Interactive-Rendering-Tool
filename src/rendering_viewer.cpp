@@ -83,10 +83,48 @@ void RenderingViewer::resizeGL(int width, int height) {
   aspect_ratio_ = width/height;
 }
 
-void RenderingViewer::onChooseTextureImage() {
-  QString file_path = QFileDialog::getOpenFileName(this, "Please choose an image file");
-  if (file_path != NULL) {
+void RenderingViewer::onChooseTextureImageOfObject1() {
+  QString file_path = QFileDialog::getOpenFileName(this, "请选择图片文件", ".",
+                                                   "JPEG Files(*.jpg *.jpeg);;PNG Files(*.png);;BMP Files(*.bmp);;PGM Files(*.pgm)");
+  if (file_path != NULL && objects_.size() > 0) {
     objects_[0]->setTextureImage(QImage(file_path));
+  }
+}
+
+void RenderingViewer::onChooseModelOfObject1() {
+  QString file_path = QFileDialog::getOpenFileName(this, "请选择模型文件", ".", "OBJ Files(*.obj)");
+  if (file_path != NULL && objects_.size() > 0) {
+    objects_[0]->rebind(file_path);
+  }
+}
+
+void RenderingViewer::onChooseTextureImageOfObject2() {
+  QString file_path = QFileDialog::getOpenFileName(this, "请选择图片文件", ".",
+                                                   "JPEG Files(*.jpg *.jpeg);;PNG Files(*.png);;BMP Files(*.bmp);;PGM Files(*.pgm)");
+  if (file_path != NULL && objects_.size() > 1) {
+    objects_[1]->setTextureImage(QImage(file_path));
+  }
+}
+
+void RenderingViewer::onChooseModelOfObject2() {
+  QString file_path = QFileDialog::getOpenFileName(this, "请选择模型文件", ".", "OBJ Files(*.obj)");
+  if (file_path != NULL && objects_.size() > 1) {
+    objects_[1]->rebind(file_path);
+  }
+}
+
+void RenderingViewer::onChooseTextureImageOfObject3() {
+  QString file_path = QFileDialog::getOpenFileName(this, "请选择图片文件", ".",
+                                                   "JPEG Files(*.jpg *.jpeg);;PNG Files(*.png);;BMP Files(*.bmp);;PGM Files(*.pgm)");
+  if (file_path != NULL && objects_.size() > 2) {
+    objects_[2]->setTextureImage(QImage(file_path));
+  }
+}
+
+void RenderingViewer::onChooseModelOfObject3() {
+  QString file_path = QFileDialog::getOpenFileName(this, "请选择模型文件", ".", "OBJ Files(*.obj)");
+  if (file_path != NULL && objects_.size() > 2) {
+    objects_[2]->rebind(file_path);
   }
 }
 

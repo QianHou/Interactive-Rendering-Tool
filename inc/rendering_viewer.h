@@ -44,7 +44,7 @@ class RenderingViewer : public QOpenGLWidget {
   }
   void setObjectRotate(double roll, double pitch, double yaw, int object_index) {
     if (object_index<0 || object_index>GlobalParams::OBJECT_NUMBER-1) return;
-    objects_pose_[object_index].position = QVector3D(roll, pitch, yaw);
+    objects_pose_[object_index].rotate = QVector3D(roll, pitch, yaw);
   }
   void setObjectScale(double scale, int object_index) {
     if (object_index<0 || object_index>GlobalParams::OBJECT_NUMBER-1) return;
@@ -61,7 +61,12 @@ class RenderingViewer : public QOpenGLWidget {
   void signalCameraPositionChange();
 
  public slots:
-  void onChooseTextureImage();
+  void onChooseTextureImageOfObject1();
+  void onChooseModelOfObject1();
+  void onChooseTextureImageOfObject2();
+  void onChooseModelOfObject2();
+  void onChooseTextureImageOfObject3();
+  void onChooseModelOfObject3();
   void onResetCameraPosition();
 
  private slots:

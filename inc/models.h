@@ -22,6 +22,7 @@ class PurityModel : public ObjectLoader {
 
   void init();
   void paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix);
+  void rebind(QString obj_file_path);
 
  protected:
   virtual QString getVertexShaderPath()   { return ":shaders/tripoints.vs"; }
@@ -65,6 +66,7 @@ class TextureModel : public PurityModel {
 
   void init();
   void paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix);
+  void rebind(QString obj_file_path);
 
   void setTextureImage(QImage image);
 
@@ -88,6 +90,8 @@ class LightTextureModel : public TextureModel {
   void init();
   void paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix);
   void paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_matrix, const std::array<PointLightModel*, 2>& pointlights);
+
+  void rebind(QString obj_file_path);
 
  protected:
   virtual QString getVertexShaderPath()   { return ":shaders/tripoints_light.vs"; }

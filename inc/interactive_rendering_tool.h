@@ -9,7 +9,6 @@ namespace Ui {
 class InteractiveRenderingTool;
 }
 
-
 class InteractiveRenderingTool : public QWidget {
   Q_OBJECT
 
@@ -17,12 +16,20 @@ class InteractiveRenderingTool : public QWidget {
   explicit InteractiveRenderingTool(QWidget *parent = nullptr);
   ~InteractiveRenderingTool();
 
+ private:
+  void uiParamsInit();
+
  private slots:
   void onCameraPositionChange();
+
   void onLightAmbientChange(int value);
   void onLightPositionChange(double value);
   void onLightColorChange(double value);
   void onLightIntensityChange(double value);
+
+  void onObjectPositionChange(double value);
+  void onObjectRotateChange(double value);
+  void onObjectScaleChange(double value);
 
  private:
   Ui::InteractiveRenderingTool* ui_;

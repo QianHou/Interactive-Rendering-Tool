@@ -62,6 +62,22 @@ void PurityModel::paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_m
   array_obj_->release();
 }
 
+void PurityModel::rebind(QString obj_file_path) {
+  this->reloadObject(obj_file_path);
+
+  array_obj_->bind();
+  if (this->vertex_.buffer) {
+    vertex_obj_->bind();
+    vertex_obj_->allocate(this->vertex_.buffer, this->vertex_.size * sizeof(GLfloat));
+    fuc_->glEnableVertexAttribArray(SHADER_VERTEX_OFFSET);
+    fuc_->glVertexAttribPointer(SHADER_VERTEX_OFFSET, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), 0);
+    vertex_obj_->release();
+  } else {
+    std::cout << "[ERROR] vertex buffer not create" << std::endl;
+  }
+  array_obj_->release();
+}
+
 /*********************************************点光源模型*********************************************/
 PointLightModel::PointLightModel() :
   PurityModel(":/objects/ball.obj"),
@@ -123,6 +139,22 @@ void TextureModel::paint(const QMatrix4x4& view_matrix, const QMatrix4x4& model_
   shader_->setUniformValue(shader_->uniformLocation("modelMatrix"), model_matrix);
   shader_->release();
 
+  array_obj_->release();
+}
+
+void TextureModel::rebind(QString obj_file_path) {
+  PurityModel::rebind(obj_file_path);
+
+  array_obj_->bind();
+  if (this->texture_index_.buffer) {
+    texture_index_obj_->bind();
+    texture_index_obj_->allocate(this->texture_index_.buffer, this->texture_index_.size * sizeof(GLfloat));
+    fuc_->glEnableVertexAttribArray(SHADER_TEXTURE_INDEX_OFFSET);
+    fuc_->glVertexAttribPointer(SHADER_TEXTURE_INDEX_OFFSET, 2, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), 0);
+    texture_index_obj_->release();
+  } else {
+    std::cout << "[ERROR] texture index buffer not create" << std::endl;
+  }
   array_obj_->release();
 }
 
@@ -197,5 +229,21 @@ void LightTextureModel::paint(const QMatrix4x4& view_matrix, const QMatrix4x4& m
 
   shader_->release();
 
+  array_obj_->release();
+}
+
+void LightTextureModel::rebind(QString obj_file_path) {
+  TextureModel::rebind(obj_file_path);
+
+  array_obj_->bind();
+  if (this->normal_vector_.buffer) {
+    normal_vertex_obj_->bind();
+    normal_vertex_obj_->allocate(this->normal_vector_.buffer, this->normal_vector_.size * sizeof(GLfloat));
+    fuc_->glEnableVertexAttribArray(SHADER_LIGHT_OFFSET);
+    fuc_->glVertexAttribPointer(SHADER_LIGHT_OFFSET, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), 0);
+    normal_vertex_obj_->release();
+  } else {
+    std::cout << "[ERROR] normal vector buffer not create" << std::endl;
+  }
   array_obj_->release();
 }
