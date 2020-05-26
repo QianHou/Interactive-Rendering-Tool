@@ -29,7 +29,9 @@ RenderingViewer::RenderingViewer(QWidget *parent) :
 
   PointLightModel::setLightAmbient(GlobalParams::AMBIENT_LIGHT_INIT);
   pointlights_[0]->setLightPosition(QVector3D(GlobalParams::POINTLIGHT1_POSITION_INIT));
+  pointlights_[0]->setLightItensity(GlobalParams::POINTLIGHT1_ITENSITY_INIT);
   pointlights_[1]->setLightPosition(QVector3D(GlobalParams::POINTLIGHT2_POSITION_INIT));
+  pointlights_[1]->setLightItensity(GlobalParams::POINTLIGHT2_ITENSITY_INIT);
 }
 
 RenderingViewer::~RenderingViewer() {

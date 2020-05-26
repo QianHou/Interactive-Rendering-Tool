@@ -37,11 +37,11 @@ const int       AMBIENT_LIGHT_INIT        = 0;
 
 const QVector3D POINTLIGHT1_POSITION_INIT = QVector3D(1.5, 1.5, 1.5);
 const QVector3D POINTLIGHT1_COLOR_INIT    = QVector3D(1.0, 1.0, 1.0);
-const double    POINTLIGHT1_ITENSITY_INIT = 0.1;
+const double    POINTLIGHT1_ITENSITY_INIT = 0.5;
 
 const QVector3D POINTLIGHT2_POSITION_INIT = QVector3D(-1.5, -1.5, 1.5);
 const QVector3D POINTLIGHT2_COLOR_INIT    = QVector3D(1.0, 1.0, 1.0);
-const double    POINTLIGHT2_ITENSITY_INIT = 0.1;
+const double    POINTLIGHT2_ITENSITY_INIT = 0.5;
 };
 
 #endif  // INC_PARAMETERS_H_
