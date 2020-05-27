@@ -115,7 +115,7 @@ void ObjectLoader::reloadObject(const QString & obj_file_path) {
   std::vector<std::array<GLfloat, 3>> normal_vecs;          // 法向量原始数据
   std::vector<std::array<int, 3>> surface_points_index;     // 三角形顶点原始数据
   std::vector<std::array<int, 3>> surface_textures_index;   // 三角形纹理索引原始数据
-  std::vector<std::array<int, 3>> surface_normals_index;   // 三角形纹理索引原始数据
+  std::vector<std::array<int, 3>> surface_normals_index;    // 三角形法线索引原始数据
 
   QTextStream texts(&obj_file);
   while (!texts.atEnd()) {
@@ -149,12 +149,13 @@ void ObjectLoader::reloadObject(const QString & obj_file_path) {
       std::transform(line_list.begin(), line_list.end(), std::back_inserter(line_indexes),
                       [](const QString line_item) {
                       QList<QString> index_list = line_item.split('/');
+                      if (index_list.size() == 1)
+                        return std::make_tuple(index_list[0].toInt(), -1, -1);
                       if (index_list.size() == 2)
                         return std::make_tuple(index_list[0].toInt(), index_list[1].toInt(), -1);
                       else
                         return std::make_tuple(index_list[0].toInt(), index_list[1].toInt(), index_list[2].toInt());
                       });
-
       if (line_list.size() == 3) {
         // 三角形平面读取
         surface_points_index.push_back({std::get<0>(line_indexes[0]), std::get<0>(line_indexes[1]), std::get<0>(line_indexes[2])});
@@ -180,7 +181,7 @@ void ObjectLoader::reloadObject(const QString & obj_file_path) {
   std::vector<GLfloat> texture_index_data;
   std::vector<GLfloat> normal_vector_data;
 
-  if (!textures.empty()) {
+  if (!points.empty()) {
     for (const auto indexes : surface_points_index) {
       for (const auto index : indexes) {
         vertex_data.push_back(points[index-1][0]);
@@ -213,7 +214,7 @@ void ObjectLoader::reloadObject(const QString & obj_file_path) {
       }
     }
   } else {
-    std::cout << "[WARN] no nomal vector in " << obj_file_path.toStdString() << std::endl;
+    std::cout << "[WARN] no normal vector in " << obj_file_path.toStdString() << std::endl;
   }
 
   this->reloadObject(vertex_data, texture_index_data, normal_vector_data);

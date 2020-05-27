@@ -25,6 +25,8 @@ class InteractiveRenderingTool : public QWidget {
   void onObjectRotateChange(double value);
   void onObjectScaleChange(double value);
 
+  void onGroundScaleChange(double value);
+
   void onLightAmbientChange(int value);
   void onLightPositionChange(double value);
   void onLightColorChange(double value);

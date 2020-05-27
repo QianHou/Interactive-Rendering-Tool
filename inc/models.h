@@ -18,6 +18,7 @@ class PurityModel : public ObjectLoader {
  public:
   PurityModel();
   explicit PurityModel(QString obj_file_path);
+  PurityModel(const std::vector<GLfloat>& vertex_data, const std::vector<GLfloat>& texture_index_data);
   ~PurityModel();
 
   void init();
@@ -62,6 +63,7 @@ class TextureModel : public PurityModel {
  public:
   TextureModel();
   explicit TextureModel(QString obj_file_path);
+  TextureModel(const std::vector<GLfloat>& vertex_data, const std::vector<GLfloat>& texture_index_data);
   ~TextureModel();
 
   void init();
@@ -74,17 +76,18 @@ class TextureModel : public PurityModel {
   virtual QString getVertexShaderPath()   { return ":shaders/tripoints.vs"; }
   virtual QString getFragmentShaderPath() { return ":shaders/tripoints.fs"; }
 
+  virtual QString getTextureImagePath() { return ":images/default.jpeg"; }
+
  protected:
   QOpenGLBuffer* texture_index_obj_;
   QOpenGLTexture* texture_ = NULL;
-
-  QImage texture_image_;
 };
 
 class LightTextureModel : public TextureModel {
  public:
   LightTextureModel();
   explicit LightTextureModel(QString obj_file_path);
+  LightTextureModel(const std::vector<GLfloat>& vertex_data, const std::vector<GLfloat>& texture_index_data);
   ~LightTextureModel();
 
   void init();
@@ -97,8 +100,27 @@ class LightTextureModel : public TextureModel {
   virtual QString getVertexShaderPath()   { return ":shaders/tripoints_light.vs"; }
   virtual QString getFragmentShaderPath() { return ":shaders/tripoints_light.fs"; }
 
- private:
+ protected:
   QOpenGLBuffer* normal_vertex_obj_;
+};
+
+class GroundModel : public LightTextureModel {
+ public:
+  GroundModel();
+
+  void warpNormalVector(QImage normal_image);
+  void resetNormalVector();
+
+ private:
+  void updateNormalVector();
+
+ protected:
+  virtual QString getTextureImagePath() { return ":images/grass.jpg"; }
+
+ private:
+  std::vector<GLfloat> warped_normal_vector_;
+  std::vector<GLfloat> raw_normal_vector_;
+
 };
 
 

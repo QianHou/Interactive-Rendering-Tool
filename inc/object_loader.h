@@ -9,6 +9,12 @@
 
 class ObjectLoader {
  public:
+  typedef struct {
+    GLfloat* buffer = NULL;
+    int size;
+  } ObjectBufferType;
+
+ public:
   ObjectLoader(const std::vector<GLfloat>& vertex_data, const std::vector<GLfloat>& texture_index_data, const std::vector<GLfloat>& normal_vector_data);
   ObjectLoader(const std::vector<GLfloat>& vertex_data, const std::vector<GLfloat>& texture_index_data);
   explicit ObjectLoader(const QString & obj_file_path);
@@ -21,10 +27,7 @@ class ObjectLoader {
   void bufferClear();
 
  public:
-  struct {
-    GLfloat* buffer = NULL;
-    int size;
-  } vertex_, normal_vector_, texture_index_;
+  ObjectBufferType vertex_, normal_vector_, texture_index_;
 
  private:
   void calcNormalVector(const std::vector<GLfloat>& vertex_data);
@@ -59,6 +62,24 @@ namespace ObjectData {
     0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
     // surface 4
     0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+  };
+
+  const std::vector<GLfloat> SQUARE_VERTEX = {
+    // surface 1
+    -1.0f, -1.0f, 0.0f,
+    1.0f, -1.0f, 0.0f,
+    1.0f, 1.0f, 0.0f,
+    // surface 2
+    1.0f, 1.0f, 0.0f,
+    -1.0f, 1.0f, 0.0f,
+    -1.0f, -1.0f, 0.0f,
+  };
+
+  const std::vector<GLfloat> SQUARE_TEXTURE_INDEX = {
+    // surface 1
+    0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+    // surface 2
+    1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
   };
 };
 

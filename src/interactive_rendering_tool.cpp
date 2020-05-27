@@ -1,7 +1,7 @@
 /* Copyright [2020] <houqian & xiaotong> */
 #include "inc/interactive_rendering_tool.h"
-#include "ui_interactive_rendering_tool.h"
 #include <iostream>
+#include "ui_interactive_rendering_tool.h"
 
 InteractiveRenderingTool::InteractiveRenderingTool(QWidget *parent) :
   QWidget(parent),
@@ -45,6 +45,11 @@ InteractiveRenderingTool::InteractiveRenderingTool(QWidget *parent) :
   connect(ui_->object3_pitch_setbox, SIGNAL(valueChanged(double)), this, SLOT(onObjectRotateChange(double)));
   connect(ui_->object3_yaw_setbox, SIGNAL(valueChanged(double)), this, SLOT(onObjectRotateChange(double)));
   connect(ui_->object3_scale_setbox, SIGNAL(valueChanged(double)), this, SLOT(onObjectScaleChange(double)));
+
+  connect(ui_->ground_texture_button, SIGNAL(clicked()), viewer_, SLOT(onChooseGroundTextureImage()), Qt::DirectConnection);
+  connect(ui_->ground_normal_button, SIGNAL(clicked()), viewer_, SLOT(onChooseGroundNormalImage()), Qt::DirectConnection);
+  connect(ui_->ground_normal_rst_button, SIGNAL(clicked()), viewer_, SLOT(onResetGroundNormalImage()), Qt::DirectConnection);
+  connect(ui_->ground_scale_setbox, SIGNAL(valueChanged(double)), this, SLOT(onGroundScaleChange(double)));
 
   connect(ui_->light1_x_setbox, SIGNAL(valueChanged(double)), this, SLOT(onLightPositionChange(double)));
   connect(ui_->light1_y_setbox, SIGNAL(valueChanged(double)), this, SLOT(onLightPositionChange(double)));
@@ -101,6 +106,8 @@ void InteractiveRenderingTool::uiParamsInit() {
   ui_->object3_yaw_setbox->setValue(GlobalParams::OBJECT3_ROTATE_INIT.z());
   ui_->object3_scale_setbox->setValue(GlobalParams::OBJECT3_SCALE_INIT);
 
+  ui_->ground_scale_setbox->setValue(GlobalParams::GROUND_SCALE_INIT);
+
   ui_->light1_x_setbox->setValue(GlobalParams::POINTLIGHT1_POSITION_INIT.x());
   ui_->light1_y_setbox->setValue(GlobalParams::POINTLIGHT1_POSITION_INIT.y());
   ui_->light1_z_setbox->setValue(GlobalParams::POINTLIGHT1_POSITION_INIT.z());
@@ -146,6 +153,10 @@ void InteractiveRenderingTool::onObjectScaleChange(double value) {
   viewer_->setObjectScale(ui_->object1_scale_setbox->value(), 0);
   viewer_->setObjectScale(ui_->object2_scale_setbox->value(), 1);
   viewer_->setObjectScale(ui_->object3_scale_setbox->value(), 2);
+}
+
+void InteractiveRenderingTool::onGroundScaleChange(double value) {
+  viewer_->setGroundScale(ui_->ground_scale_setbox->value());
 }
 
 void InteractiveRenderingTool::onLightAmbientChange(int value) {

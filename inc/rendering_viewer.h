@@ -51,6 +51,10 @@ class RenderingViewer : public QOpenGLWidget {
     objects_pose_[object_index].scale = scale;
   }
 
+  void setGroundScale(double scale) {
+    ground_scale_ = scale;
+  }
+
   QString getObjectName(int object_index) const {
     if (object_index<0 || object_index>GlobalParams::OBJECT_NUMBER-1) return "";
     return objects_name_[object_index];
@@ -73,6 +77,9 @@ class RenderingViewer : public QOpenGLWidget {
   void onChooseModelOfObject2();
   void onChooseTextureImageOfObject3();
   void onChooseModelOfObject3();
+  void onChooseGroundTextureImage();
+  void onChooseGroundNormalImage();
+  void onResetGroundNormalImage();
   void onResetCameraPosition();
 
  private slots:
@@ -94,11 +101,13 @@ class RenderingViewer : public QOpenGLWidget {
   QVector3D camera_pos_;
   QVector3D observe_center_;
 
+  GroundModel* ground_;
   std::array<LightTextureModel*, GlobalParams::OBJECT_NUMBER> objects_;
   std::array<PointLightModel*, GlobalParams::POINTLIGHT_NUMBER> pointlights_;
 
   std::array<ObjectPoseType, GlobalParams::OBJECT_NUMBER> objects_pose_;
   std::array<QString, GlobalParams::OBJECT_NUMBER> objects_name_;
+  double ground_scale_;
 
   struct {
     struct {

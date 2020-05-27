@@ -8,6 +8,8 @@ RenderingViewer::RenderingViewer(QWidget *parent) :
   camera_pos_(GlobalParams::CAMERA_POSITION_INIT),
   QOpenGLWidget(parent),
   fuc_(new QOpenGLFunctions()),
+  ground_(new GroundModel()),
+  ground_scale_(GlobalParams::GROUND_SCALE_INIT),
   objects_({new LightTextureModel(GlobalParams::OBJECT1_OBJ_PATH_INIT),
             new LightTextureModel(GlobalParams::OBJECT2_OBJ_PATH_INIT),
             new LightTextureModel(GlobalParams::OBJECT3_OBJ_PATH_INIT)}),
@@ -43,6 +45,7 @@ void RenderingViewer::initializeGL() {
   fuc_->glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
   fuc_->glEnable(GL_DEPTH_TEST);
 
+  ground_->init();
   for (const auto pointlight : pointlights_) {
     pointlight->init();
   }
@@ -63,6 +66,12 @@ void RenderingViewer::paintGL() {
   view_matrix.perspective(45.0f, aspect_ratio_, 0.1f, 100.0f);
   view_matrix.lookAt(camera_pos_, observe_center_, QVector3D(0.0f, 0.0f, 1.0f));
 
+  QMatrix4x4 ground_model_matrix;
+  ground_model_matrix.translate(QVector3D(0, 0, -0.01f));
+  ground_model_matrix.rotate(90, QVector3D(1, 0, 0));
+  ground_model_matrix.scale(ground_scale_);
+  ground_->paint(view_matrix, ground_model_matrix, pointlights_);
+
   for (const auto& pointlight : pointlights_) {
     QMatrix4x4 model_matrix;
     model_matrix.translate(pointlight->getLightPosition());
@@ -72,11 +81,11 @@ void RenderingViewer::paintGL() {
 
   for (size_t i=0; i < objects_.size(); i++) {
     QMatrix4x4 model_matrix;
-    model_matrix.scale(objects_pose_[i].scale);
     model_matrix.translate(objects_pose_[i].position);
     model_matrix.rotate(objects_pose_[i].rotate.x(), QVector3D(1, 0, 0));
     model_matrix.rotate(objects_pose_[i].rotate.y(), QVector3D(0, 1, 0));
     model_matrix.rotate(objects_pose_[i].rotate.z(), QVector3D(0, 0, 1));
+    model_matrix.scale(objects_pose_[i].scale);
     objects_[i]->paint(view_matrix, model_matrix, pointlights_);
   }
 
@@ -137,6 +146,26 @@ void RenderingViewer::onChooseModelOfObject3() {
     objects_name_[2] = file_path.split('/').last();
     emit signalObjectNameChange();
   }
+}
+
+void RenderingViewer::onChooseGroundTextureImage() {
+  QString file_path = QFileDialog::getOpenFileName(this, "请选择图片文件", ".",
+                                                   "JPEG Files(*.jpg *.jpeg);;PNG Files(*.png);;BMP Files(*.bmp);;PGM Files(*.pgm)");
+  if (file_path != NULL) {
+    ground_->setTextureImage(QImage(file_path));
+  }
+}
+
+void RenderingViewer::onChooseGroundNormalImage() {
+  QString file_path = QFileDialog::getOpenFileName(this, "请选择法线贴图文件", ".",
+                                                   "JPEG Files(*.jpg *.jpeg);;PNG Files(*.png);;BMP Files(*.bmp);;PGM Files(*.pgm)");
+  if (file_path != NULL) {
+    ground_->warpNormalVector(QImage(file_path));
+  }
+}
+
+void RenderingViewer::onResetGroundNormalImage() {
+  ground_->resetNormalVector();
 }
 
 void RenderingViewer::mousePressEvent(QMouseEvent* event) {

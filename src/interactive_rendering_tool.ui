@@ -1976,6 +1976,87 @@
      </property>
     </widget>
    </widget>
+   <widget class="QWidget" name="ground_table">
+    <attribute name="title">
+     <string>地面</string>
+    </attribute>
+    <widget class="QPushButton" name="ground_normal_button">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>130</y>
+       <width>111</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>选择凹凸规则</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="ground_normal_rst_button">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>130</y>
+       <width>81</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>重置</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ground_scale_title">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>70</y>
+       <width>81</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>缩放系数</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="ground_scale_setbox">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>70</y>
+       <width>121</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <double>100.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.010000000000000</double>
+     </property>
+     <property name="value">
+      <double>0.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="ground_texture_button">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>201</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>选择纹理图片</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QPushButton" name="help_button">
    <property name="geometry">

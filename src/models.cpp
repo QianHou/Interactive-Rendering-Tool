@@ -1,5 +1,6 @@
 /* Copyright [2020] <houqian & xiaotong> */
 #include "inc/models.h"
+#include <QColor>
 #include <iostream>
 
 /*********************************************纯色模型*********************************************/
@@ -12,6 +13,13 @@ PurityModel::PurityModel():
 
 PurityModel::PurityModel(QString obj_file_path):
   ObjectLoader(obj_file_path),
+  fuc_(new QOpenGLFunctions()),
+  shader_(new QOpenGLShaderProgram()),
+  vertex_obj_(new QOpenGLBuffer()),
+  array_obj_(new QOpenGLVertexArrayObject()) {}
+
+PurityModel::PurityModel(const std::vector<GLfloat>& vertex_data, const std::vector<GLfloat>& texture_index_data):
+  ObjectLoader(vertex_data, texture_index_data),
   fuc_(new QOpenGLFunctions()),
   shader_(new QOpenGLShaderProgram()),
   vertex_obj_(new QOpenGLBuffer()),
@@ -103,6 +111,10 @@ TextureModel::TextureModel(QString obj_file_path):
   PurityModel(obj_file_path),
   texture_index_obj_(new QOpenGLBuffer()) {}
 
+TextureModel::TextureModel(const std::vector<GLfloat>& vertex_data, const std::vector<GLfloat>& texture_index_data):
+  PurityModel(vertex_data, texture_index_data),
+  texture_index_obj_(new QOpenGLBuffer()) {}
+
 TextureModel::~TextureModel() {
   if (texture_) delete texture_;
   delete texture_index_obj_;
@@ -111,7 +123,7 @@ TextureModel::~TextureModel() {
 void TextureModel::init() {
   PurityModel::init();
 
-  texture_ = new QOpenGLTexture(QImage(":images/default.jpeg"));
+  texture_ = new QOpenGLTexture(QImage(getTextureImagePath()));
 
   array_obj_->bind();
 
@@ -169,6 +181,10 @@ LightTextureModel::LightTextureModel() :
 
 LightTextureModel::LightTextureModel(QString obj_file_path) :
   TextureModel(obj_file_path),
+  normal_vertex_obj_(new QOpenGLBuffer()) {}
+
+LightTextureModel::LightTextureModel(const std::vector<GLfloat>& vertex_data, const std::vector<GLfloat>& texture_index_data) :
+  TextureModel(vertex_data, texture_index_data),
   normal_vertex_obj_(new QOpenGLBuffer()) {}
 
 LightTextureModel::~LightTextureModel() {
@@ -246,4 +262,73 @@ void LightTextureModel::rebind(QString obj_file_path) {
     std::cout << "[ERROR] normal vector buffer not create" << std::endl;
   }
   array_obj_->release();
+}
+
+/*********************************************地面模型*********************************************/
+GroundModel::GroundModel() :
+  LightTextureModel(":/objects/square.obj") {
+  // modify texture index
+  for (size_t i = 0; i < this->texture_index_.size/6 ; i++) {
+    std::array<GLfloat, 6> texture = {this->vertex_.buffer[i*9+0]+0.5f,
+                                      this->vertex_.buffer[i*9+2]+0.5f,
+                                      this->vertex_.buffer[i*9+3]+0.5f,
+                                      this->vertex_.buffer[i*9+5]+0.5f,
+                                      this->vertex_.buffer[i*9+6]+0.5f,
+                                      this->vertex_.buffer[i*9+8]+0.5f};
+    std::copy(texture.begin(), texture.end(), texture_index_.buffer + i*6);
+  }
+  raw_normal_vector_.resize(this->normal_vector_.size);
+  std::copy(this->normal_vector_.buffer, this->normal_vector_.buffer+this->normal_vector_.size, raw_normal_vector_.begin());
+}
+
+void GroundModel::warpNormalVector(QImage normal_image) {
+  if (normal_image.size() == QSize(0, 0)) {
+    std::cout << "[WARN] size of normal image is zero" << std::endl;
+    return;
+  }
+  if (this->vertex_.size/9 != this->texture_index_.size/6 || this->vertex_.size/9 != this->normal_vector_.size/9) {
+    std::cout << "[ERROR] invalid data length" << std::endl;
+    return;
+  }
+
+  warped_normal_vector_.clear();
+  for (size_t i = 0; i < this->texture_index_.size/2 ; i++) {
+    std::array<GLfloat, 3> vertex = {this->vertex_.buffer[i*3+0], this->vertex_.buffer[i*3+1], this->vertex_.buffer[i*3+2]};
+    std::array<GLfloat, 2> texture = {this->texture_index_.buffer[i*2+0], this->texture_index_.buffer[i*2+1]};
+    std::array<GLfloat, 2> pix_index = {texture[0] * normal_image.width(), (1-texture[1]) * normal_image.height()};
+
+    if (pix_index[0] < 0) pix_index[0] = 0;
+    if (pix_index[0] > normal_image.width()-1) pix_index[0] = normal_image.width()-1;
+    if (pix_index[1] < 0) pix_index[1] = 0;
+    if (pix_index[1] > normal_image.height()-1) pix_index[1] = normal_image.height()-1;
+
+    warped_normal_vector_.push_back(QColor(normal_image.pixel(QPoint(pix_index[0], pix_index[1]))).red()   *2.0f-1.0f);
+    warped_normal_vector_.push_back(QColor(normal_image.pixel(QPoint(pix_index[0], pix_index[1]))).green() *2.0f-1.0f);
+    warped_normal_vector_.push_back(QColor(normal_image.pixel(QPoint(pix_index[0], pix_index[1]))).blue()  *2.0f-1.0f);
+  }
+
+  if (warped_normal_vector_.size() == this->normal_vector_.size) {
+    std::copy(warped_normal_vector_.begin(), warped_normal_vector_.end(), normal_vector_.buffer);
+  }
+  updateNormalVector();
+}
+
+void GroundModel::resetNormalVector() {
+  if (raw_normal_vector_.size() == this->normal_vector_.size) {
+    std::copy(raw_normal_vector_.begin(), raw_normal_vector_.end(), normal_vector_.buffer);
+  }
+  updateNormalVector();
+}
+
+void GroundModel::updateNormalVector() {
+  if (this->normal_vector_.buffer) {
+    normal_vertex_obj_->create();
+    normal_vertex_obj_->bind();
+    normal_vertex_obj_->allocate(this->normal_vector_.buffer, this->normal_vector_.size * sizeof(GLfloat));
+    fuc_->glEnableVertexAttribArray(SHADER_LIGHT_OFFSET);
+    fuc_->glVertexAttribPointer(SHADER_LIGHT_OFFSET, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), 0);
+    normal_vertex_obj_->release();
+  } else {
+    std::cout << "[ERROR] normal vector buffer not create" << std::endl;
+  }
 }
