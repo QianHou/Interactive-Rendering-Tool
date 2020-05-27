@@ -1,5 +1,6 @@
 /* Copyright [2020] <houqian & xiaotong> */
 #include "inc/interactive_rendering_tool.h"
+#include <QMessageBox>
 #include <iostream>
 #include "ui_interactive_rendering_tool.h"
 
@@ -14,6 +15,7 @@ InteractiveRenderingTool::InteractiveRenderingTool(QWidget *parent) :
   viewer_->setObjectName(QStringLiteral("RenderingViewer"));
   viewer_->setGeometry(QRect(0, 0, ui_->viewer_divide->x(), this->geometry().height()));
 
+  connect(ui_->help_button, SIGNAL(clicked()), this, SLOT(onHelp()));
   connect(viewer_, SIGNAL(signalObjectNameChange()), this, SLOT(onObjectNameChange()));
 
   connect(ui_->object1_model_button, SIGNAL(clicked()), viewer_, SLOT(onChooseModelOfObject1()), Qt::DirectConnection);
@@ -129,6 +131,21 @@ void InteractiveRenderingTool::uiParamsInit() {
   ui_->campos_x_label->setText(QString::number(GlobalParams::CAMERA_POSITION_INIT.x(), 'f', 2));
   ui_->campos_y_label->setText(QString::number(GlobalParams::CAMERA_POSITION_INIT.y(), 'f', 2));
   ui_->campos_z_label->setText(QString::number(GlobalParams::CAMERA_POSITION_INIT.z(), 'f', 2));
+}
+
+void InteractiveRenderingTool::onHelp() {
+  QMessageBox* msg_box = new QMessageBox(this);
+  msg_box->setWindowTitle("使用说明");
+  msg_box->setText("➜ 鼠标左键控制旋转。\n"
+                   "➜ 鼠标滚轮控制缩放。\n"
+                   "➜ 在物体属性设置页面，可以分别选择设置物体的模型、纹理、位置、旋转角和缩放比。\n"
+                   "➜ 在地面属性设置页面，可以选择设置地面的纹理、缩放比和凹凸格式。\n"
+                   "➜ 在灯光属性设置页面，可以分别选择设置点光源的位置、颜色和亮度。\n"
+                   "➜ 可以通过滑杆调整环境光的强度。\n"
+                   "➜ 右下角实时显示了相机观察的位置。\n");
+  msg_box->setStyleSheet("QLabel { min-width: 40em;min-height:10em;font:18px;}");
+  msg_box->setModal(false);
+  msg_box->show();
 }
 
 void InteractiveRenderingTool::onObjectNameChange() {

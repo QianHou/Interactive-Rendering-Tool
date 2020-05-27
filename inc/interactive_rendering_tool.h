@@ -20,6 +20,8 @@ class InteractiveRenderingTool : public QWidget {
   void uiParamsInit();
 
  private slots:
+  void onHelp();
+
   void onObjectNameChange();
   void onObjectPositionChange(double value);
   void onObjectRotateChange(double value);
